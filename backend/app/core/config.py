@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Optional
 
 
 class Settings(BaseSettings):
@@ -23,9 +23,23 @@ class Settings(BaseSettings):
     # API
     API_PREFIX: str = "/api"
 
+    # ── AI / Groq ──────────────────────────────────────────────────────────────
+    GROQ_API_KEY: Optional[str] = None
+    MODEL_NAME: str = "llama-3.3-70b-versatile"
+    TEMPERATURE: float = 0.7
+    MAX_OUTPUT_TOKENS: int = 2048
+
+    # ── Database ───────────────────────────────────────────────────────────────
+    DATABASE_URL: str = "sqlite+aiosqlite:///./creatorloop.db"
+
     @property
     def DEBUG(self) -> bool:
         return self.CL_DEBUG
+
+    @property
+    def ai_configured(self) -> bool:
+        """True when a Groq API key is present."""
+        return bool(self.GROQ_API_KEY)
 
     model_config = {
         "env_file": ".env",

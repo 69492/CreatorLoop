@@ -1,16 +1,14 @@
 /**
  * Glassmorphism card wrapper.
  * hover: true (adds hover lift effect)
+ * compact: true (reduces padding)
  */
-export default function Card({ children, className = '', hover = false }) {
+export default function Card({ children, className = '', hover = false, compact = false, ...props }) {
+  const baseStyle = hover ? 'glass-card-hover' : 'glass-card'
+  const paddingStyle = compact ? 'p-4' : 'p-6'
+
   return (
-    <div
-      className={`glass-card p-6 ${
-        hover
-          ? 'transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-navy-500/50 cursor-default'
-          : ''
-      } ${className}`}
-    >
+    <div className={`${baseStyle} ${paddingStyle} ${className}`} {...props}>
       {children}
     </div>
   )

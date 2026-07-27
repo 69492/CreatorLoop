@@ -16,83 +16,70 @@ export default function Hero() {
           {/* Copy */}
           <div className="animate-slide-up">
             {/* Badge */}
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full text-xs font-semibold uppercase tracking-widest text-brand-purple-light bg-brand-purple/15 border border-brand-purple/30">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 mb-8 rounded-full text-xs font-semibold uppercase tracking-widest text-brand-purple-light bg-brand-purple/15 border border-brand-purple/30 backdrop-blur-xs">
               <span className="w-2 h-2 rounded-full bg-brand-purple-light animate-pulse-slow" />
-              AI Creative Partner — Phase 2
+              AI-Powered Creative Platform
             </span>
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight tracking-tight mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white leading-tight tracking-tight mb-6">
               Your AI Creative Partner for{' '}
-              <span className="gradient-text">Content Creation</span>
+              <span className="gradient-text">Content Production</span>
             </h1>
 
-            <p className="text-gray-400 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl">
-              CreatorLoop helps creators brainstorm ideas, develop stories, build scripts,
-              adapt content for multiple platforms, and collaborate with AI throughout
-              the creative process.
+            <p className="text-gray-300 text-lg sm:text-xl leading-relaxed mb-10 max-w-xl">
+              CreatorLoop helps creators brainstorm concepts, develop structured narratives, write ready-to-publish scripts, and adapt content for every platform seamlessly.
             </p>
 
             {/* CTAs */}
             <div className="flex flex-wrap gap-4">
               <Link to="/workspace">
-                <Button variant="primary" className="text-base px-8 py-4">
-                  Get Started
+                <Button variant="primary" size="lg" className="px-8 py-4 shadow-xl">
+                  Get Started Free
                   <HiArrowRight size={18} />
                 </Button>
               </Link>
               <a href="#pipeline">
-                <Button variant="secondary" className="text-base px-8 py-4">
+                <Button variant="secondary" size="lg" className="px-8 py-4">
                   <HiPlay size={16} />
-                  Learn More
+                  Explore Pipeline
                 </Button>
               </a>
             </div>
           </div>
 
-          {/* Illustration placeholder */}
+          {/* Illustration preview */}
           <div className="hidden lg:flex items-center justify-center animate-fade-in">
             <div className="relative w-full max-w-md">
               {/* Outer glow ring */}
               <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-brand-purple/30 to-brand-blue/20 blur-2xl" />
 
-              <div className="relative glass-card p-8 rounded-3xl glow-purple">
+              <div className="relative glass-card p-8 rounded-3xl glow-purple border-white/20">
                 {/* Mock pipeline preview */}
                 <div className="space-y-3">
                   {[
-                    { label: 'Idea', icon: '💡', active: true },
-                    { label: 'Brainstorm', icon: '🧠', active: false },
-                    { label: 'Creative Direction', icon: '🎯', active: false },
-                    { label: 'Content Dev', icon: '✍️', active: false },
-                    { label: 'Final Package', icon: '🚀', active: false },
-                  ].map((step, i) => (
+                    { label: 'Idea Analysis', icon: '💡', active: true },
+                    { label: 'Brainstorm Concepts', icon: '🧠', active: true },
+                    { label: 'Creative Direction', icon: '🎯', active: true },
+                    { label: 'Content Development', icon: '✍️', active: true },
+                    { label: 'Platform Package', icon: '🚀', active: true },
+                  ].map((step) => (
                     <div
                       key={step.label}
-                      className={`flex items-center gap-3 p-3 rounded-xl transition-all ${
-                        step.active
-                          ? 'bg-brand-purple/30 border border-brand-purple/50'
-                          : 'bg-white/5 border border-white/10'
-                      }`}
+                      className="flex items-center gap-3 p-3 rounded-xl bg-brand-purple/20 border border-brand-purple/40 backdrop-blur-xs"
                     >
                       <span className="text-lg">{step.icon}</span>
-                      <span
-                        className={`text-sm font-medium ${step.active ? 'text-white' : 'text-gray-400'}`}
-                      >
+                      <span className="text-sm font-semibold text-white">
                         {step.label}
                       </span>
-                      {step.active && (
-                        <span className="ml-auto text-xs text-brand-purple-light font-semibold">
-                          Active
-                        </span>
-                      )}
-                      {i < 4 && !step.active && (
-                        <span className="ml-auto text-xs text-gray-600">Soon</span>
-                      )}
+                      <span className="ml-auto text-xs text-emerald-400 font-semibold px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
+                        Active
+                      </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/10 text-xs text-gray-500 text-center">
-                  CreatorLoop Pipeline — Coming Soon
+                <div className="mt-6 pt-4 border-t border-white/10 text-xs font-semibold text-gray-400 text-center">
+                  CreatorLoop End-to-End Workflow Engine
                 </div>
               </div>
             </div>

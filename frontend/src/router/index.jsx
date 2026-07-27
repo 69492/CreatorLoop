@@ -7,6 +7,8 @@ import NotFound from '@/pages/NotFound'
 import Workspace from '@/pages/Workspace'
 import Create from '@/pages/Create'
 import Results from '@/pages/Results'
+import Dashboard from '@/pages/Dashboard'
+import ProjectDetail from '@/pages/ProjectDetail'
 
 export const router = createBrowserRouter([
   // ── Public landing pages ────────────────────────────────────────────────────
@@ -26,6 +28,8 @@ export const router = createBrowserRouter([
       { path: 'workspace', element: <Workspace /> },
       { path: 'create', element: <Create /> },
       { path: 'results', element: <Results /> },
+      { path: 'projects', element: <Dashboard /> },
+      { path: 'projects/:id', element: <ProjectDetail /> },
     ],
   },
   // ── 404 ─────────────────────────────────────────────────────────────────────

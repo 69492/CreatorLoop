@@ -149,26 +149,21 @@ export default function Create() {
 
     setLoading(true)
     try {
-      // TODO: Call API endpoint in Phase 3
-      // For now, simulate delay and navigate to results
-      await new Promise((resolve) => setTimeout(resolve, 1500))
       navigate('/results', {
         state: { idea, goal, platform, length },
       })
-    } catch (err) {
-      alert('An error occurred. Please try again.')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-10 max-w-4xl mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto space-y-6">
       {/* Back button */}
       <button
         type="button"
         onClick={() => navigate('/workspace')}
-        className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors mb-6"
+        className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple rounded-lg"
       >
         <HiArrowLeft size={16} />
         Back to Workspace
@@ -177,17 +172,16 @@ export default function Create() {
       {/* Step indicator */}
       <StepIndicator steps={STEPS} currentStep={currentStep} />
 
-      <Card className="p-6 sm:p-8">
+      <Card className="p-6 sm:p-8 relative">
         {/* Step 0 — Idea Input */}
         {currentStep === 0 && (
-          <div className="space-y-5">
+          <div className="space-y-5 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-white mb-2">
-                Describe your creative idea
+              <h2 className="text-xl font-bold text-white mb-1.5">
+                Describe your creative concept
               </h2>
               <p className="text-sm text-gray-400">
-                Share the concept, theme, or topic you want to create content around. Be as
-                specific or as open as you like.
+                Share the core idea, message, or subject matter for your content. Be as detailed as you like.
               </p>
             </div>
 
@@ -195,14 +189,14 @@ export default function Create() {
               <textarea
                 value={idea}
                 onChange={(e) => setIdea(e.target.value)}
-                placeholder="Describe your idea..."
-                rows={8}
-                className="w-full px-4 py-3 rounded-xl bg-navy-700/60 border border-white/10 text-white placeholder-gray-600 resize-none focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all"
+                placeholder="e.g. How remote teams can use asynchronous communication to double deep work time..."
+                rows={7}
+                className="w-full px-4 py-3 rounded-xl bg-navy-700/80 border border-white/15 text-white placeholder-gray-500 resize-none focus:outline-none focus:ring-2 focus:ring-brand-purple focus:border-transparent transition-all text-sm leading-relaxed"
               />
-              <div className="flex items-center justify-between mt-2 px-1">
-                <span className="text-xs text-gray-600">Minimum 20 characters</span>
+              <div className="flex items-center justify-between mt-2.5 px-1">
+                <span className="text-xs text-gray-500">Minimum 20 characters required</span>
                 <span
-                  className={`text-xs ${charCount >= 20 ? 'text-green-400' : 'text-gray-600'}`}
+                  className={`text-xs font-medium ${charCount >= 20 ? 'text-emerald-400' : 'text-gray-500'}`}
                 >
                   {charCount} characters
                 </span>
@@ -213,11 +207,11 @@ export default function Create() {
 
         {/* Step 1 — Creative Goal */}
         {currentStep === 1 && (
-          <div className="space-y-5">
+          <div className="space-y-5 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-white mb-2">Choose your creative goal</h2>
+              <h2 className="text-xl font-bold text-white mb-1.5">Choose your primary goal</h2>
               <p className="text-sm text-gray-400">
-                What do you want to achieve with this content?
+                Select what format or objective best fits this piece of content.
               </p>
             </div>
 
@@ -238,11 +232,11 @@ export default function Create() {
 
         {/* Step 2 — Target Platform */}
         {currentStep === 2 && (
-          <div className="space-y-5">
+          <div className="space-y-5 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-white mb-2">Select your target platform</h2>
+              <h2 className="text-xl font-bold text-white mb-1.5">Select target platform</h2>
               <p className="text-sm text-gray-400">
-                Where do you plan to publish this content?
+                Where will this content primarily be published?
               </p>
             </div>
 
@@ -263,11 +257,11 @@ export default function Create() {
 
         {/* Step 3 — Content Length */}
         {currentStep === 3 && (
-          <div className="space-y-5">
+          <div className="space-y-5 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-white mb-2">Choose content length</h2>
+              <h2 className="text-xl font-bold text-white mb-1.5">Choose content depth & length</h2>
               <p className="text-sm text-gray-400">
-                How long should the final content be?
+                Determine the target length for your generated draft.
               </p>
             </div>
 
@@ -287,52 +281,45 @@ export default function Create() {
 
         {/* Step 4 — Review */}
         {currentStep === 4 && (
-          <div className="space-y-6">
+          <div className="space-y-6 animate-fade-in">
             <div>
-              <h2 className="text-xl font-bold text-white mb-2">Review & Start</h2>
+              <h2 className="text-xl font-bold text-white mb-1.5">Review session parameters</h2>
               <p className="text-sm text-gray-400">
-                Confirm your settings before starting the AI collaboration.
+                Confirm your configuration before launching the creative pipeline.
               </p>
             </div>
 
-            <div className="glass-card p-5 space-y-4">
+            <div className="glass-card p-5 space-y-4 border-white/15 bg-navy-800/80">
               <div>
-                <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
-                  Your Idea
+                <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
+                  Concept Overview
                 </h3>
-                <p className="text-sm text-gray-300 leading-relaxed">{idea}</p>
+                <p className="text-sm text-gray-200 leading-relaxed font-medium">{idea}</p>
               </div>
-              <div className="grid sm:grid-cols-3 gap-4">
+              <div className="grid sm:grid-cols-3 gap-4 pt-2 border-t border-white/10">
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
                     Goal
                   </h3>
-                  <p className="text-sm text-white">
+                  <p className="text-sm font-semibold text-white capitalize">
                     {CREATIVE_GOALS.find((g) => g.id === goal)?.label}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
                     Platform
                   </h3>
-                  <p className="text-sm text-white">
+                  <p className="text-sm font-semibold text-white capitalize">
                     {PLATFORMS.find((p) => p.id === platform)?.label}
                   </p>
                 </div>
                 <div>
-                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1">
+                  <h3 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-1">
                     Length
                   </h3>
-                  <p className="text-sm text-white capitalize">{length}</p>
+                  <p className="text-sm font-semibold text-white capitalize">{length}</p>
                 </div>
               </div>
-            </div>
-
-            <div className="bg-brand-purple/10 border border-brand-purple/30 rounded-xl p-4 text-center">
-              <p className="text-sm text-gray-300">
-                <strong className="text-white">Note:</strong> AI integration will be enabled in
-                Phase 3. This submission validates the workflow architecture.
-              </p>
             </div>
           </div>
         )}
@@ -356,37 +343,11 @@ export default function Create() {
             <Button
               variant="primary"
               onClick={handleSubmit}
-              disabled={!isStepValid() || loading}
+              disabled={!isStepValid()}
+              loading={loading}
             >
-              {loading ? (
-                <>
-                  <svg
-                    className="animate-spin w-4 h-4"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  Processing...
-                </>
-              ) : (
-                <>
-                  <HiSparkles size={16} />
-                  Collaborate with AI
-                </>
-              )}
+              <HiSparkles size={16} />
+              Generate Content
             </Button>
           )}
         </div>

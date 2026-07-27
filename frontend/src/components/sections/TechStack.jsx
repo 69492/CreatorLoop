@@ -49,18 +49,18 @@ const TECH_STACK = [
   },
   {
     icon: <HiCube size={32} />,
-    name: 'IBM Bob',
-    description: 'Primary AI development tool used to architect, scaffold, and build CreatorLoop.',
-    badge: 'Primary Dev Tool',
+    name: 'Groq AI Engine',
+    description: 'High-speed LLaMA-3 model integration delivering real-time creative synthesis.',
+    badge: 'Core Engine',
     badgeVariant: 'purple',
     iconColor: 'text-violet-400',
-    category: 'Dev',
+    category: 'AI Pipeline',
   },
   {
     icon: <HiCube size={32} />,
-    name: 'IBM Granite',
-    description: 'Enterprise-grade foundation AI model planned as the core inference engine in Phase 3.',
-    badge: 'Planned AI Model',
+    name: 'Foundation AI Architecture',
+    description: 'Provider-independent AI architecture engineered for multi-stage content generation.',
+    badge: 'AI Architecture',
     badgeVariant: 'purple',
     iconColor: 'text-brand-purple-light',
     category: 'AI',
@@ -89,7 +89,7 @@ export default function TechStack() {
               <div className={`${tech.iconColor}`}>{tech.icon}</div>
               <div className="flex flex-col items-end gap-1">
                 <Badge variant={tech.badgeVariant}>{tech.badge}</Badge>
-                <span className="text-xs text-gray-600">{tech.category}</span>
+                <span className="text-xs text-gray-400 font-medium">{tech.category}</span>
               </div>
             </div>
 

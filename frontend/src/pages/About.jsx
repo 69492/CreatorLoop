@@ -7,42 +7,39 @@ import { HiArrowRight, HiCode, HiLightBulb, HiSparkles } from 'react-icons/hi'
 
 const ROADMAP = [
   {
-    phase: 'Phase 1',
-    title: 'Foundation',
+    phase: 'Milestone 1',
+    title: 'Core Platform',
     status: 'Complete',
-    badgeVariant: 'blue',
+    badgeVariant: 'success',
     items: [
-      'React + Vite + Tailwind CSS frontend',
+      'React + Vite + Tailwind CSS frontend architecture',
       'FastAPI backend with CORS & logging',
-      'Responsive landing page',
-      'Health API endpoint',
-      'Component library & routing',
+      'Responsive design system & component library',
+      'Health check & session services',
     ],
   },
   {
-    phase: 'Phase 2',
+    phase: 'Milestone 2',
     title: 'Creator Workspace',
-    status: 'In Progress',
-    badgeVariant: 'purple',
+    status: 'Complete',
+    badgeVariant: 'success',
     items: [
       'Professional workspace dashboard',
-      'Idea input & creative goal selection',
-      'Platform & length configuration',
-      'Provider-independent AI architecture',
-      'Creative pipeline manager',
+      'Multi-step creative session builder',
+      'Target platform & length configuration',
+      'Project management & export engine',
     ],
   },
   {
-    phase: 'Phase 3',
-    title: 'AI Integration',
-    status: 'Planned',
-    badgeVariant: 'default',
+    phase: 'Milestone 3',
+    title: 'AI Generation Pipeline',
+    status: 'Active',
+    badgeVariant: 'purple',
     items: [
-      'IBM Granite model integration',
-      'Full creative pipeline execution',
-      'Multi-platform content generation',
-      'Voice & style personalisation',
-      'Export & delivery system',
+      'Multi-stage AI creative pipeline integration',
+      'Brainstorming & direction synthesis',
+      'Full draft generation & outline structuring',
+      'Multi-platform content adaptation',
     ],
   },
 ]
@@ -61,14 +58,14 @@ export default function About() {
             About CreatorLoop
           </Badge>
 
-          <h1 className="text-4xl sm:text-5xl font-bold text-white leading-tight tracking-tight mb-6">
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-white leading-tight tracking-tight mb-6">
             Your AI Creative Partner for{' '}
-            <span className="gradient-text">Content Creation</span>
+            <span className="gradient-text">Content Production</span>
           </h1>
 
-          <p className="text-gray-400 text-lg leading-relaxed max-w-2xl mx-auto">
-            CreatorLoop is an AI-powered creative platform that helps you brainstorm ideas,
-            develop stories, build scripts, and adapt content for every platform — with AI
+          <p className="text-gray-300 text-lg leading-relaxed max-w-2xl mx-auto">
+            CreatorLoop is an AI-powered creative platform that helps creators brainstorm concepts,
+            develop structured stories, write full scripts, and adapt content for every platform — with AI
             as your collaborator throughout the entire creative process.
           </p>
         </div>
@@ -80,22 +77,22 @@ export default function About() {
           {[
             {
               icon: <HiLightBulb size={24} />,
-              title: 'The Problem',
-              text: 'Content creators waste hours reformatting, rephrasing, and republishing the same ideas across platforms. There is no structured, repeatable system.',
-              iconBg: 'bg-yellow-500/15',
-              iconColor: 'text-yellow-400',
+              title: 'The Challenge',
+              text: 'Content creators spend endless hours reformatting, rephrasing, and adapting concepts across platforms without a unified system.',
+              iconBg: 'bg-amber-500/15',
+              iconColor: 'text-amber-400',
             },
             {
               icon: <HiCode size={24} />,
               title: 'Our Solution',
-              text: 'A structured AI creative workspace where you collaborate with AI to brainstorm, develop, and adapt content across every platform — in your voice.',
+              text: 'A structured AI creative workspace where you collaborate with AI to brainstorm, draft, and adapt content natively for every platform.',
               iconBg: 'bg-brand-purple/15',
               iconColor: 'text-brand-purple-light',
             },
             {
               icon: <HiSparkles size={24} />,
               title: 'The Vision',
-              text: 'A world where any creator can operate with the production efficiency of a media company — without the team size or budget that normally requires.',
+              text: 'Empowering independent creators and media teams to operate with high-grade production efficiency while preserving authentic voice.',
               iconBg: 'bg-brand-blue/15',
               iconColor: 'text-brand-blue-light',
             },
@@ -104,7 +101,7 @@ export default function About() {
               <div className={`inline-flex p-3 rounded-2xl ${item.iconBg} w-fit`}>
                 <span className={item.iconColor}>{item.icon}</span>
               </div>
-              <h3 className="text-white font-semibold text-lg">{item.title}</h3>
+              <h3 className="text-white font-bold text-lg">{item.title}</h3>
               <p className="text-gray-400 text-sm leading-relaxed">{item.text}</p>
             </Card>
           ))}
@@ -113,27 +110,26 @@ export default function About() {
         {/* Roadmap */}
         <div className="mb-6">
           <h2 className="section-heading text-center mb-3">
-            Project <span className="gradient-text">Roadmap</span>
+            Product <span className="gradient-text">Architecture</span>
           </h2>
           <p className="section-subheading text-center mx-auto mb-12">
-            CreatorLoop is being built in focused phases. Here is where we are and where we are
-            heading.
+            CreatorLoop is engineered with robust, modular architecture.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6">
             {ROADMAP.map((phase) => (
               <Card key={phase.phase} className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-widest text-gray-500">
+                  <span className="text-xs font-bold uppercase tracking-widest text-gray-400">
                     {phase.phase}
                   </span>
                   <Badge variant={phase.badgeVariant}>{phase.status}</Badge>
                 </div>
-                <h3 className="text-white font-semibold text-xl">{phase.title}</h3>
+                <h3 className="text-white font-bold text-xl">{phase.title}</h3>
                 <ul className="space-y-2">
                   {phase.items.map((item) => (
-                    <li key={item} className="flex items-start gap-2 text-sm text-gray-400">
-                      <span className="mt-1 w-1.5 h-1.5 rounded-full bg-brand-purple-light shrink-0" />
+                    <li key={item} className="flex items-start gap-2 text-sm text-gray-300">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-brand-purple-light shrink-0" />
                       {item}
                     </li>
                   ))}
@@ -147,13 +143,13 @@ export default function About() {
         <div className="mt-16 text-center">
           <div className="flex flex-wrap gap-4 justify-center">
             <Link to="/workspace">
-              <Button variant="primary">
+              <Button variant="primary" size="lg">
                 Start Creating
                 <HiArrowRight size={16} />
               </Button>
             </Link>
             <Link to="/">
-              <Button variant="secondary">
+              <Button variant="secondary" size="lg">
                 Back to Home
               </Button>
             </Link>
