@@ -1,6 +1,15 @@
 import { useEffect, useState, useCallback } from 'react'
 import { Link } from 'react-router-dom'
-import { HiPencilAlt, HiArrowRight, HiPlus, HiFolderOpen } from 'react-icons/hi'
+import { useAuth } from '@/contexts/AuthContext'
+import {
+  HiPencilAlt,
+  HiArrowRight,
+  HiPlus,
+  HiFolderOpen,
+  HiFilter,
+  HiSearch,
+  HiX,
+} from 'react-icons/hi'
 
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
@@ -10,16 +19,18 @@ import SearchBar from '@/components/projects/SearchBar'
 import FilterPanel from '@/components/projects/FilterPanel'
 import { useProjects } from '@/hooks/useProjects'
 
-const PIPELINE_OVERVIEW = [
-  { label: 'Idea', color: 'bg-amber-400' },
-  { label: 'Brainstorm', color: 'bg-purple-400' },
-  { label: 'Direction', color: 'bg-brand-purple-light' },
-  { label: 'Content', color: 'bg-brand-blue-light' },
-  { label: 'Adapt', color: 'bg-cyan-400' },
-  { label: 'Export', color: 'bg-emerald-400' },
+const PIPELINE_LABELS = [
+  { label: 'Idea',       color: 'bg-amber-400' },
+  { label: 'Brainstorm', color: 'bg-violet-400' },
+  { label: 'Direction',  color: 'bg-brand-purple-light' },
+  { label: 'Draft',      color: 'bg-brand-blue-light' },
+  { label: 'Adapt',      color: 'bg-cyan-400' },
+  { label: 'Publish',    color: 'bg-emerald-400' },
 ]
 
 export default function Dashboard() {
+  const { user } = useAuth()
+  const firstName = user?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'Creator'
   const { projects, total, stats, loading, fetchProjects, deleteProject, duplicateProject, renameProject } =
     useProjects()
 
@@ -27,7 +38,7 @@ export default function Dashboard() {
   const [platform, setPlatform] = useState('')
   const [sortBy, setSortBy]     = useState('updated_at')
   const [page, setPage]         = useState(1)
-  const [renameState, setRenameState] = useState(null) // { id, value }
+  const [renameState, setRenameState] = useState(null)
 
   const PER_PAGE = 12
   const totalPages = Math.ceil(total / PER_PAGE)
@@ -36,62 +47,68 @@ export default function Dashboard() {
     fetchProjects({ search, platform, sortBy, page, perPage: PER_PAGE })
   }, [search, platform, sortBy, page, fetchProjects])
 
-  useEffect(() => {
-    load()
-  }, [load])
+  useEffect(() => { load() }, [load])
 
-  const handleRenameStart = (id, currentTitle) => {
-    setRenameState({ id, value: currentTitle })
-  }
-
+  const handleRenameStart  = (id, title) => setRenameState({ id, value: title })
   const handleRenameCommit = async () => {
-    if (!renameState || !renameState.value.trim()) return
+    if (!renameState?.value.trim()) return
     await renameProject(renameState.id, renameState.value.trim())
     setRenameState(null)
   }
 
-  return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-6xl mx-auto space-y-6 animate-fade-in">
+  const hasFilters = !!(search || platform)
 
-      {/* ── Header ──────────────────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+  return (
+    <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-6xl mx-auto space-y-7 animate-fade-in">
+
+      {/* ── Header ── */}
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Your Projects</h1>
-          <p className="text-sm text-gray-400 mt-1">Manage, edit, and export your creative project library.</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight">
+            {firstName}'s Projects
+          </h1>
+          <p className="text-sm text-gray-600 mt-0.5">
+            Manage, edit, and export your creative library.
+          </p>
         </div>
         <Link to="/create">
           <Button variant="primary" size="md">
-            <HiPlus size={18} />
+            <HiPlus size={16} />
             New Creation
           </Button>
         </Link>
       </div>
 
-      {/* ── Stats ───────────────────────────────────────────────────────── */}
-      <div>
-        <StatsGrid stats={stats} />
-      </div>
+      {/* ── Stats ── */}
+      {stats && <StatsGrid stats={stats} />}
 
-      {/* ── Pipeline mini-map for brand new state ───────────────────────── */}
-      {!projects.length && !loading && !search && !platform && (
-        <Card className="py-12 text-center border-brand-purple/20 bg-gradient-to-b from-navy-800/80 to-navy-900/90">
-          <div className="w-14 h-14 rounded-2xl bg-brand-purple/15 border border-brand-purple/30 flex items-center justify-center mx-auto mb-4 text-brand-purple-light">
-            <HiFolderOpen size={28} />
+      {/* ── Zero state (no projects, no filters) ── */}
+      {!projects.length && !loading && !hasFilters && (
+        <div
+          className="glass-card py-16 text-center"
+          style={{ background: 'linear-gradient(160deg, rgba(12,17,32,0.8) 0%, rgba(8,13,26,0.9) 100%)' }}
+        >
+          <div
+            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 text-brand-purple-light"
+            style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)' }}
+          >
+            <HiFolderOpen size={24} />
           </div>
-          
-          <h3 className="text-white font-bold text-xl mb-2">No projects created yet</h3>
-          <p className="text-gray-400 text-sm mb-6 max-w-sm mx-auto leading-relaxed">
-            Start a new creative session to generate structured drafts and platform adaptations.
+          <h3 className="text-white font-semibold text-lg mb-2">No projects yet</h3>
+          <p className="text-gray-600 text-sm mb-8 max-w-xs mx-auto leading-relaxed">
+            Start a creation session to generate and save your first AI-crafted content.
           </p>
 
-          <div className="flex items-center justify-center gap-1.5 mb-6 max-w-md mx-auto flex-wrap">
-            {PIPELINE_OVERVIEW.map((s, i) => (
-              <div key={s.label} className="flex items-center gap-1.5">
-                <span className={`text-[11px] font-semibold px-2.5 py-1 rounded-full text-white/90 ${s.color} bg-opacity-20 border border-white/10`}>
-                  {s.label}
-                </span>
-                {i < PIPELINE_OVERVIEW.length - 1 && (
-                  <HiArrowRight size={10} className="text-gray-600" />
+          {/* Pipeline flow */}
+          <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
+            {PIPELINE_LABELS.map((s, i) => (
+              <div key={s.label} className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${s.color}`} />
+                  <span className="text-xs text-gray-600 font-medium">{s.label}</span>
+                </div>
+                {i < PIPELINE_LABELS.length - 1 && (
+                  <HiArrowRight size={9} className="text-gray-800" />
                 )}
               </div>
             ))}
@@ -99,17 +116,20 @@ export default function Dashboard() {
 
           <Link to="/create">
             <Button variant="primary" size="lg">
-              <HiPencilAlt size={18} />
+              <HiPencilAlt size={16} />
               Start Your First Creation
             </Button>
           </Link>
-        </Card>
+        </div>
       )}
 
-      {/* ── Search + Filters ─────────────────────────────────────────────── */}
-      {(projects.length > 0 || search || platform) && (
-        <div className="flex flex-col gap-3">
-          <SearchBar value={search} onChange={(v) => { setSearch(v); setPage(1) }} />
+      {/* ── Search + Filters ── */}
+      {(projects.length > 0 || hasFilters) && (
+        <div className="space-y-2.5">
+          <SearchBar
+            value={search}
+            onChange={(v) => { setSearch(v); setPage(1) }}
+          />
           <FilterPanel
             platform={platform}
             onPlatform={(v) => { setPlatform(v); setPage(1) }}
@@ -119,18 +139,18 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── Projects grid ────────────────────────────────────────────────── */}
+      {/* ── Project grid / skeleton ── */}
       {loading ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="glass-card p-5 h-48 flex flex-col justify-between">
-              <div className="space-y-3">
-                <div className="skeleton h-5 w-3/4" />
-                <div className="skeleton h-4 w-1/2" />
+            <div key={i} className="glass-card p-5 h-44">
+              <div className="space-y-3 mb-6">
+                <div className="skeleton h-4 w-4/5" />
+                <div className="skeleton h-3 w-2/5" />
               </div>
               <div className="space-y-2">
                 <div className="skeleton h-3 w-1/3" />
-                <div className="skeleton h-3 w-2/3" />
+                <div className="skeleton h-3 w-3/5" />
               </div>
             </div>
           ))}
@@ -149,24 +169,33 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── Empty search state ───────────────────────────────────────────── */}
-      {!loading && projects.length === 0 && (search || platform) && (
-        <Card className="text-center py-12">
-          <p className="text-gray-300 font-medium text-base mb-1">No matching projects found</p>
-          <p className="text-gray-500 text-xs mb-4">Try refining your search terms or clearing platform filters.</p>
+      {/* ── Empty search state ── */}
+      {!loading && projects.length === 0 && hasFilters && (
+        <div className="glass-card text-center py-14">
+          <div
+            className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4 text-gray-500"
+            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+          >
+            <HiSearch size={17} />
+          </div>
+          <p className="text-gray-300 font-medium text-sm mb-1">No results found</p>
+          <p className="text-gray-700 text-xs mb-5">
+            Try adjusting your search terms or clearing filters.
+          </p>
           <Button
             variant="secondary"
             size="sm"
             onClick={() => { setSearch(''); setPlatform(''); setPage(1) }}
           >
+            <HiX size={13} />
             Clear Filters
           </Button>
-        </Card>
+        </div>
       )}
 
-      {/* ── Pagination ───────────────────────────────────────────────────── */}
+      {/* ── Pagination ── */}
       {totalPages > 1 && (
-        <div className="flex items-center justify-center gap-3 pt-4">
+        <div className="flex items-center justify-center gap-3 pt-2">
           <Button
             variant="secondary"
             size="sm"
@@ -175,8 +204,8 @@ export default function Dashboard() {
           >
             ← Previous
           </Button>
-          <span className="text-xs font-semibold text-gray-400 px-2">
-            Page {page} of {totalPages}
+          <span className="text-xs text-gray-600 px-2 font-medium tabular-nums">
+            {page} / {totalPages}
           </span>
           <Button
             variant="secondary"
@@ -189,17 +218,27 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── Rename modal ─────────────────────────────────────────────────── */}
+      {/* ── Rename modal ── */}
       {renameState && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm px-4 animate-fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center px-4 animate-fade-in"
+          style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)' }}
           role="dialog"
           aria-modal="true"
           aria-labelledby="rename-modal-title"
         >
-          <div className="glass-card p-6 w-full max-w-md rounded-2xl shadow-2xl border-white/15 bg-navy-800">
-            <h3 id="rename-modal-title" className="text-white font-bold text-lg mb-1">Rename Project</h3>
-            <p className="text-xs text-gray-400 mb-4">Update the title of your saved project.</p>
+          <div
+            className="w-full max-w-md animate-scale-in-spring rounded-2xl p-6"
+            style={{
+              background: 'rgba(8,13,26,0.98)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: '0 24px 64px rgba(0,0,0,0.7)',
+            }}
+          >
+            <h3 id="rename-modal-title" className="text-white font-semibold text-base mb-1">
+              Rename Project
+            </h3>
+            <p className="text-xs text-gray-600 mb-5">Enter a new title for this project.</p>
             <input
               autoFocus
               type="text"
@@ -209,14 +248,15 @@ export default function Dashboard() {
                 if (e.key === 'Enter') handleRenameCommit()
                 if (e.key === 'Escape') setRenameState(null)
               }}
-              className="w-full px-4 py-2.5 rounded-xl bg-navy-900 border border-white/15 text-sm text-white focus:outline-none focus:border-brand-purple focus:ring-1 focus:ring-brand-purple mb-5"
+              className="input-base mb-5"
+              placeholder="Project title"
             />
             <div className="flex gap-3 justify-end">
-              <Button variant="ghost" onClick={() => setRenameState(null)}>
+              <Button variant="ghost" size="sm" onClick={() => setRenameState(null)}>
                 Cancel
               </Button>
-              <Button variant="primary" onClick={handleRenameCommit}>
-                Save Changes
+              <Button variant="primary" size="sm" onClick={handleRenameCommit}>
+                Save
               </Button>
             </div>
           </div>

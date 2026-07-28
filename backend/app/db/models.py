@@ -3,7 +3,8 @@ SQLAlchemy ORM models for Phase 4 — Project Management.
 
 Schema:
     projects
-        id              UUID primary key
+        id              UUID primary key    
+        user_id
         title           project name (user editable)
         idea            original prompt
         goal            creative goal identifier
@@ -26,7 +27,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import DateTime, Integer, String, Text
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.dialects.sqlite import JSON
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -45,6 +46,14 @@ class Project(Base):
         String(36),
         primary_key=True,
         default=lambda: str(uuid.uuid4()),
+    )
+
+    # ── Ownership (nullable for backward compat with existing rows) ────────────
+    user_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
     )
 
     # ── User-facing fields ─────────────────────────────────────────────────────

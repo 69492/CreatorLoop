@@ -6,31 +6,28 @@ import { HiSearch, HiX } from 'react-icons/hi'
  */
 export default function SearchBar({ value, onChange, placeholder = 'Search projects…' }) {
   return (
-    <div className="relative">
+    <div className="relative group">
       <HiSearch
-        size={16}
-        className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none"
+        size={15}
+        className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-600 pointer-events-none transition-colors duration-200 group-focus-within:text-brand-purple-light"
+        aria-hidden="true"
       />
       <input
         type="search"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        className="
-          w-full pl-9 pr-9 py-2.5 rounded-xl
-          bg-navy-600/50 border border-white/10
-          text-sm text-gray-100 placeholder-gray-500
-          focus:outline-none focus:border-brand-purple/60 focus:ring-1 focus:ring-brand-purple/40
-          transition-colors
-        "
+        className="input-base pl-9 pr-9"
+        aria-label="Search projects"
       />
       {value && (
         <button
+          type="button"
           onClick={() => onChange('')}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-300 transition-colors"
+          className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 flex items-center justify-center rounded-md text-gray-600 hover:text-gray-300 hover:bg-white/10 transition-all duration-150"
           aria-label="Clear search"
         >
-          <HiX size={14} />
+          <HiX size={12} />
         </button>
       )}
     </div>

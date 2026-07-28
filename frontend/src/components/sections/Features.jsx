@@ -12,82 +12,104 @@ import {
 
 const FEATURES = [
   {
-    icon: <HiLightBulb size={24} />,
+    icon: <HiLightBulb size={22} />,
     title: 'AI Brainstorming Partner',
     description:
-      'Collaborate with AI to explore ideas, angles, and creative directions before committing to a content path.',
-    gradient: 'from-yellow-500/20 to-orange-500/10',
-    iconColor: 'text-yellow-400',
+      'Explore creative angles and narrative directions collaboratively — before a single word is drafted.',
+    gradient: 'from-amber-500/10 to-orange-500/5',
+    iconColor: 'text-amber-400',
+    iconBg: 'bg-amber-500/10 border-amber-500/18',
+    accentBar: 'from-amber-500 to-orange-500',
   },
   {
-    icon: <HiPencilAlt size={24} />,
-    title: 'Creative Story Development',
+    icon: <HiPencilAlt size={22} />,
+    title: 'Story Development Engine',
     description:
-      'Transform a raw concept into a fully developed narrative with structured story arcs and compelling beats.',
-    gradient: 'from-brand-purple/20 to-blue-500/10',
+      'Transform raw concepts into fully structured narratives with compelling arcs, hooks, and story beats.',
+    gradient: 'from-brand-purple/10 to-violet-500/5',
     iconColor: 'text-brand-purple-light',
+    iconBg: 'bg-brand-purple/10 border-brand-purple/18',
+    accentBar: 'from-brand-purple to-violet-600',
   },
   {
-    icon: <HiGlobeAlt size={24} />,
-    title: 'Multi-Platform Content Creation',
+    icon: <HiGlobeAlt size={22} />,
+    title: 'Multi-Platform Publishing',
     description:
-      'Create content natively suited for YouTube, LinkedIn, Instagram, Blogs, Twitter, and Podcasts in one workflow.',
-    gradient: 'from-brand-blue/20 to-cyan-500/10',
+      'YouTube, LinkedIn, Instagram, Blog, Twitter, Podcast — all adapted natively from a single source of truth.',
+    gradient: 'from-brand-blue/10 to-cyan-500/5',
     iconColor: 'text-brand-blue-light',
+    iconBg: 'bg-brand-blue/10 border-brand-blue/18',
+    accentBar: 'from-brand-blue to-cyan-500',
   },
   {
-    icon: <HiSwitchHorizontal size={24} />,
-    title: 'Intelligent Content Adaptation',
+    icon: <HiSwitchHorizontal size={22} />,
+    title: 'Intelligent Adaptation',
     description:
-      'Automatically reshape and reformat your content to match the tone, format, and audience of each platform.',
-    gradient: 'from-pink-500/20 to-purple-500/10',
+      'Each platform gets content formatted for its audience, tone, and native format — automatically.',
+    gradient: 'from-pink-500/10 to-rose-500/5',
     iconColor: 'text-pink-400',
+    iconBg: 'bg-pink-500/10 border-pink-500/18',
+    accentBar: 'from-pink-500 to-rose-500',
   },
   {
-    icon: <HiCog size={24} />,
-    title: 'Creative Workflow Automation',
+    icon: <HiCog size={22} />,
+    title: 'Workflow Automation',
     description:
-      'Automate the repetitive steps of content production so you can focus entirely on the creative work.',
-    gradient: 'from-green-500/20 to-teal-500/10',
-    iconColor: 'text-green-400',
+      'Eliminate the repetitive reformatting cycle. Focus entirely on your creative ideas — let the pipeline handle the rest.',
+    gradient: 'from-emerald-500/10 to-teal-500/5',
+    iconColor: 'text-emerald-400',
+    iconBg: 'bg-emerald-500/10 border-emerald-500/18',
+    accentBar: 'from-emerald-500 to-teal-500',
   },
   {
-    icon: <HiUserCircle size={24} />,
-    title: 'Personalized Creative Assistance',
+    icon: <HiUserCircle size={22} />,
+    title: 'Voice-Preserving AI',
     description:
-      'AI that learns your voice, style, and preferences to deliver content that feels authentically yours.',
-    gradient: 'from-brand-blue/20 to-indigo-500/10',
+      'Content that sounds like you. AI that enhances your style rather than overriding your authentic voice.',
+    gradient: 'from-indigo-500/10 to-blue-500/5',
     iconColor: 'text-indigo-400',
+    iconBg: 'bg-indigo-500/10 border-indigo-500/18',
+    accentBar: 'from-indigo-500 to-blue-500',
   },
 ]
 
 export default function Features() {
   return (
-    <SectionWrapper id="features" className="bg-navy-800/50">
+    <SectionWrapper id="features" className="bg-navy-800/20">
       <SectionHeader
         label="Features"
         heading={
           <>
-            Your Complete{' '}
-            <span className="gradient-text">AI Creative Toolkit</span>
+            Everything You Need to{' '}
+            <span className="gradient-text">Create at Scale</span>
           </>
         }
-        subheading="Everything you need to move from idea to finished content — with AI as your creative collaborator at every step."
+        subheading="A complete creative system — from spark to publishable content — with AI as your collaborator at every stage."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {FEATURES.map((feature) => (
-          <Card key={feature.title} hover>
-            {/* Icon */}
-            <div
-              className={`inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-gradient-to-br ${feature.gradient} mb-5`}
-            >
-              <span className={feature.iconColor}>{feature.icon}</span>
-            </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {FEATURES.map((feature, i) => (
+          <div
+            key={feature.title}
+            className="glass-card-hover group relative overflow-hidden p-6"
+            style={{ animationDelay: `${i * 60}ms` }}
+          >
+            {/* Hover gradient overlay */}
+            <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none`} />
 
-            <h3 className="text-white font-semibold text-lg mb-2">{feature.title}</h3>
-            <p className="text-gray-400 text-sm leading-relaxed">{feature.description}</p>
-          </Card>
+            {/* Top accent bar */}
+            <div className={`absolute top-0 left-6 right-6 h-px bg-gradient-to-r ${feature.accentBar} opacity-0 group-hover:opacity-40 transition-opacity duration-500`} />
+
+            <div className="relative">
+              {/* Icon */}
+              <div className={`inline-flex items-center justify-center w-11 h-11 rounded-2xl border ${feature.iconBg} mb-5 transition-transform duration-300 group-hover:scale-110`}>
+                <span className={feature.iconColor}>{feature.icon}</span>
+              </div>
+
+              <h3 className="text-white font-semibold text-base mb-2.5 tracking-tight">{feature.title}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed group-hover:text-gray-400 transition-colors duration-300">{feature.description}</p>
+            </div>
+          </div>
         ))}
       </div>
     </SectionWrapper>

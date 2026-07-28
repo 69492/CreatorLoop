@@ -1,6 +1,5 @@
 import SectionWrapper from '@/components/common/SectionWrapper'
 import SectionHeader from '@/components/common/SectionHeader'
-import Card from '@/components/ui/Card'
 import Badge from '@/components/ui/Badge'
 import {
   SiReact,
@@ -8,97 +7,98 @@ import {
   SiTailwindcss,
   SiPython,
 } from 'react-icons/si'
-import { HiCube } from 'react-icons/hi'
+import { HiCube, HiDatabase } from 'react-icons/hi'
 
 const TECH_STACK = [
   {
-    icon: <SiReact size={32} />,
-    name: 'React',
-    description: 'Component-driven UI built with React 18 and modern hooks for a fast, responsive workspace.',
-    badge: 'v18',
+    icon: <SiReact size={28} />,
+    name: 'React 18',
+    description: 'Component-driven UI with modern hooks and concurrent rendering for a fast, responsive workspace.',
+    badge: 'Frontend',
     badgeVariant: 'blue',
     iconColor: 'text-cyan-400',
-    category: 'Frontend',
+    ring: 'ring-cyan-500/15',
   },
   {
-    icon: <SiFastapi size={32} />,
+    icon: <SiFastapi size={28} />,
     name: 'FastAPI',
-    description: 'High-performance async Python API powering the creative workflow backend.',
-    badge: 'v0.111',
-    badgeVariant: 'blue',
+    description: 'High-performance async Python API with automatic OpenAPI documentation and typed requests.',
+    badge: 'Backend',
+    badgeVariant: 'success',
     iconColor: 'text-teal-400',
-    category: 'Backend',
+    ring: 'ring-teal-500/15',
   },
   {
-    icon: <SiPython size={32} />,
-    name: 'Python',
-    description: 'Clean, typed Python runtime powering all backend services and the AI pipeline layer.',
-    badge: '3.11+',
-    badgeVariant: 'blue',
+    icon: <SiPython size={28} />,
+    name: 'Python 3.11',
+    description: 'Typed, clean Python runtime powering all backend services and the multi-stage AI pipeline.',
+    badge: 'Runtime',
+    badgeVariant: 'warning',
     iconColor: 'text-yellow-400',
-    category: 'Runtime',
+    ring: 'ring-yellow-500/15',
   },
   {
-    icon: <SiTailwindcss size={32} />,
+    icon: <SiTailwindcss size={28} />,
     name: 'Tailwind CSS',
-    description: 'Utility-first CSS framework delivering a consistent, premium design system.',
-    badge: 'v3',
+    description: 'Utility-first design system with a consistent, premium visual language across every component.',
+    badge: 'Styling',
     badgeVariant: 'blue',
     iconColor: 'text-sky-400',
-    category: 'Styling',
+    ring: 'ring-sky-500/15',
   },
   {
-    icon: <HiCube size={32} />,
-    name: 'Groq AI Engine',
-    description: 'High-speed LLaMA-3 model integration delivering real-time creative synthesis.',
-    badge: 'Core Engine',
+    icon: <HiCube size={28} />,
+    name: 'Groq AI',
+    description: "Ultra-fast LLaMA-3 inference via Groq's dedicated AI hardware — sub-second token generation.",
+    badge: 'AI Engine',
     badgeVariant: 'purple',
     iconColor: 'text-violet-400',
-    category: 'AI Pipeline',
+    ring: 'ring-violet-500/15',
   },
   {
-    icon: <HiCube size={32} />,
-    name: 'Foundation AI Architecture',
-    description: 'Provider-independent AI architecture engineered for multi-stage content generation.',
-    badge: 'AI Architecture',
-    badgeVariant: 'purple',
-    iconColor: 'text-brand-purple-light',
-    category: 'AI',
+    icon: <HiDatabase size={28} />,
+    name: 'SQLite + Async',
+    description: 'Async SQLAlchemy with aiosqlite for lightweight, zero-config persistent storage.',
+    badge: 'Database',
+    badgeVariant: 'default',
+    iconColor: 'text-gray-400',
+    ring: 'ring-white/8',
   },
 ]
 
 export default function TechStack() {
   return (
-    <SectionWrapper id="tech" className="bg-navy-800/50">
+    <SectionWrapper id="tech" className="bg-navy-800/20">
       <SectionHeader
         label="Technology"
         heading={
           <>
             Built on a{' '}
-            <span className="gradient-text">Modern Stack</span>
+            <span className="gradient-text">Production-Grade Stack</span>
           </>
         }
-        subheading="Production-grade tools chosen for performance, developer experience, and long-term scalability."
+        subheading="Every tool chosen for performance, developer experience, and long-term reliability at scale."
       />
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
-        {TECH_STACK.map((tech) => (
-          <Card key={tech.name} hover className="flex flex-col gap-4">
-            {/* Header */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {TECH_STACK.map((tech, i) => (
+          <div
+            key={tech.name}
+            className="glass-card-hover group flex flex-col gap-4 p-6"
+            style={{ animationDelay: `${i * 60}ms` }}
+          >
             <div className="flex items-start justify-between">
-              <div className={`${tech.iconColor}`}>{tech.icon}</div>
-              <div className="flex flex-col items-end gap-1">
-                <Badge variant={tech.badgeVariant}>{tech.badge}</Badge>
-                <span className="text-xs text-gray-400 font-medium">{tech.category}</span>
+              <div className={`p-2.5 rounded-xl ring-1 ${tech.ring} bg-white/4 ${tech.iconColor} transition-transform duration-300 group-hover:scale-110`}>
+                {tech.icon}
               </div>
+              <Badge variant={tech.badgeVariant}>{tech.badge}</Badge>
             </div>
 
-            {/* Info */}
             <div>
-              <h3 className="text-white font-semibold text-base mb-1">{tech.name}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{tech.description}</p>
+              <h3 className="text-white font-semibold text-base mb-1.5 tracking-tight">{tech.name}</h3>
+              <p className="text-gray-500 text-sm leading-relaxed group-hover:text-gray-400 transition-colors duration-300">{tech.description}</p>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
     </SectionWrapper>

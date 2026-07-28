@@ -1,13 +1,46 @@
 fastapi>=0.111.0
 uvicorn[standard]>=0.29.0
+
+# Pydantic
 pydantic>=2.7.0
+pydantic[email]>=2.7.0
 pydantic-settings>=2.2.1
+email-validator>=2.2.0
+
+# Environment
 python-dotenv>=1.0.1
+
+# AI
 groq>=0.9.0
 langchain-groq>=0.2.0
 langchain-core>=0.3.0
+
+# Database
 sqlalchemy>=2.0.0
+alembic>=1.13.1
+psycopg2-binary>=2.9.9
 aiosqlite>=0.20.0
+
+# Authentication — password hashing
+# argon2-cffi: primary hasher (Argon2id, OWASP recommended)
+argon2-cffi>=23.1.0
+# passlib: used only for verifying legacy bcrypt hashes stored before migration
+passlib[bcrypt]>=1.7.4
+# bcrypt must be pinned to 4.0.x — passlib 1.7.4 (unmaintained) is incompatible
+# with bcrypt >=4.1.x (removed __about__) and bcrypt >=5.x (hard 72-byte limit
+# triggers a ValueError in passlib's wrap-bug detection probe).
+bcrypt==4.0.1
+
+# Authentication — JWT
+python-jose[cryptography]>=3.3.0
+
+# OAuth
+authlib>=1.3.1
+httpx>=0.27.0
+
+# File Uploads
+python-multipart>=0.0.9
+
+# Export
 python-docx>=1.1.0
 markdown2>=2.4.0
-python-multipart>=0.0.9

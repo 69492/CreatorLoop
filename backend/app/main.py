@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.auth import router as auth_router
 from app.api.health import router as health_router
 from app.api.workspace import router as workspace_router
 from app.api.ai import router as ai_router
@@ -72,6 +73,7 @@ app.add_middleware(
 app.add_exception_handler(Exception, global_exception_handler)
 
 # ── Routers ───────────────────────────────────────────────────────────────────
+app.include_router(auth_router, prefix=settings.API_PREFIX)
 app.include_router(health_router, prefix=settings.API_PREFIX)
 app.include_router(workspace_router, prefix=settings.API_PREFIX)
 app.include_router(ai_router, prefix=settings.API_PREFIX)

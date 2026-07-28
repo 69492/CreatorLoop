@@ -1,13 +1,14 @@
 from pydantic_settings import BaseSettings
 from typing import List, Optional
+import secrets
 
 
 class Settings(BaseSettings):
     # Application
     APP_NAME: str = "CreatorLoop"
     APP_VERSION: str = "1.0.0"
-    APP_DESCRIPTION: str = "AI-powered Content Production Pipeline"
-    CL_DEBUG: bool = False  # prefix avoids collision with system DEBUG env var
+    APP_DESCRIPTION: str = "AI-Powered Creative Platform"
+    CL_DEBUG: bool = False
 
     # Server
     HOST: str = "0.0.0.0"
@@ -32,13 +33,19 @@ class Settings(BaseSettings):
     # ── Database ───────────────────────────────────────────────────────────────
     DATABASE_URL: str = "sqlite+aiosqlite:///./creatorloop.db"
 
+    # ── Auth / JWT ─────────────────────────────────────────────────────────────
+    JWT_SECRET_KEY: str = secrets.token_urlsafe(32)  # Override in .env for production
+    JWT_ACCESS_TOKEN_EXPIRE_DAYS: int = 7
+
+    # ── Google OAuth ───────────────────────────────────────────────────────────
+    GOOGLE_CLIENT_ID: Optional[str] = None
+
     @property
     def DEBUG(self) -> bool:
         return self.CL_DEBUG
 
     @property
     def ai_configured(self) -> bool:
-        """True when a Groq API key is present."""
         return bool(self.GROQ_API_KEY)
 
     model_config = {

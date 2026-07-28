@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useCallback, useRef } from 'react'
+import { HiCheckCircle, HiXCircle, HiInformationCircle, HiX } from 'react-icons/hi'
 
 /**
  * Lightweight toast notification system.
@@ -57,44 +58,64 @@ export function useToast() {
 
 // ── Visual component ──────────────────────────────────────────────────────────
 
-const TYPE_STYLES = {
-  success: 'bg-green-900/80 border-green-600/50 text-green-200',
-  error:   'bg-red-900/80   border-red-600/50   text-red-200',
-  info:    'bg-navy-600/90  border-white/15      text-gray-200',
-}
-
-const TYPE_ICONS = {
-  success: '✓',
-  error:   '✕',
-  info:    'ℹ',
+const TYPE_CONFIG = {
+  success: {
+    icon: <HiCheckCircle size={16} />,
+    cls: 'border-emerald-500/30 text-emerald-300',
+    iconCls: 'text-emerald-400',
+    bg: 'rgba(8,17,26,0.92)',
+  },
+  error: {
+    icon: <HiXCircle size={16} />,
+    cls: 'border-red-500/30 text-red-300',
+    iconCls: 'text-red-400',
+    bg: 'rgba(8,17,26,0.92)',
+  },
+  info: {
+    icon: <HiInformationCircle size={16} />,
+    cls: 'border-white/12 text-gray-300',
+    iconCls: 'text-brand-purple-light',
+    bg: 'rgba(8,17,26,0.92)',
+  },
 }
 
 function ToastContainer({ toasts, dismiss }) {
   if (!toasts.length) return null
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col gap-2 pointer-events-none">
-      {toasts.map((t) => (
-        <div
-          key={t.id}
-          className={`
-            pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl
-            border backdrop-blur-sm shadow-lg max-w-xs w-full
-            animate-slide-up text-sm font-medium
-            ${TYPE_STYLES[t.type] ?? TYPE_STYLES.info}
-          `}
-        >
-          <span className="shrink-0 mt-0.5 text-base leading-none">
-            {TYPE_ICONS[t.type]}
-          </span>
-          <span className="flex-1 leading-snug">{t.message}</span>
-          <button
-            onClick={() => dismiss(t.id)}
-            className="shrink-0 opacity-50 hover:opacity-100 transition-opacity text-lg leading-none"
+    <div
+      className="fixed bottom-5 right-5 z-[100] flex flex-col gap-2 pointer-events-none"
+      aria-live="polite"
+      aria-label="Notifications"
+    >
+      {toasts.map((t) => {
+        const config = TYPE_CONFIG[t.type] ?? TYPE_CONFIG.info
+        return (
+          <div
+            key={t.id}
+            className={`
+              pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-2xl
+              border backdrop-blur-md
+              max-w-[340px] w-full animate-slide-up text-sm font-medium
+              ${config.cls}
+            `}
+            style={{ background: config.bg, boxShadow: '0 4px 24px rgba(0,0,0,0.4)' }}
+            role="alert"
           >
-            ×
-          </button>
-        </div>
-      ))}
+            <span className={`shrink-0 mt-0.5 ${config.iconCls}`} aria-hidden="true">
+              {config.icon}
+            </span>
+            <span className="flex-1 leading-snug">{t.message}</span>
+            <button
+              type="button"
+              onClick={() => dismiss(t.id)}
+              className="shrink-0 opacity-40 hover:opacity-80 transition-opacity ml-1"
+              aria-label="Dismiss notification"
+            >
+              <HiX size={14} />
+            </button>
+          </div>
+        )
+      })}
     </div>
   )
 }

@@ -12,13 +12,32 @@ const apiClient = axios.create({
 })
 
 apiClient.interceptors.request.use(
-  (config) => config,
+  (config) => {
+    const token = localStorage.getItem('cl_token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
   (error) => Promise.reject(error)
 )
 
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Redirect to auth on 401 (unless we're already on auth endpoints)
+    if (
+      error?.response?.status === 401 &&
+      !error?.config?.url?.includes('/api/auth/')
+    ) {
+      localStorage.removeItem('cl_token')
+      localStorage.removeItem('cl_user')
+      // Only redirect if we're in the browser and not on a public page
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/auth')) {
+        window.location.href = '/auth'
+      }
+    }
+
     const message =
       error?.response?.data?.detail ??
       error?.message ??
