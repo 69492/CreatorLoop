@@ -261,21 +261,7 @@ docker compose -f docker-compose.prod.yml up --build
 
 ---
 
-## Deployment
 
-### Frontend (Vercel / Netlify)
-1. Push to GitHub
-2. Connect repo to Vercel or Netlify
-3. Set build command: `npm run build`
-4. Set output directory: `dist`
-5. Add environment variables: `VITE_API_BASE_URL`, `VITE_GOOGLE_CLIENT_ID`
-
-### Backend (Railway / Render / Fly.io)
-1. Set environment variables in the platform dashboard
-2. Set `DATABASE_URL` to a PostgreSQL connection string (e.g. Neon)
-3. Set start command: `python run.py` or `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
-
----
 
 ## Google OAuth Setup
 
@@ -356,19 +342,7 @@ cd backend && pytest
 
 ---
 
-## Production Checklist
 
-- [ ] `VITE_API_BASE_URL` points to production backend
-- [ ] `SECRET_KEY` is a strong random value (32+ chars)
-- [ ] `GROQ_API_KEY` is set
-- [ ] `GOOGLE_CLIENT_ID` + `GOOGLE_CLIENT_SECRET` are set (if using Google Login)
-- [ ] `DATABASE_URL` points to PostgreSQL (not SQLite)
-- [ ] `ALLOWED_ORIGINS` includes production frontend domain
-- [ ] HTTPS is configured on both frontend and backend
-- [ ] Sentry or error tracking is configured (optional)
-- [ ] Environment variables are NOT committed to git
-
----
 
 ## Future Improvements
 
@@ -383,22 +357,7 @@ cd backend && pytest
 
 ---
 
-## Design System
 
-CreatorLoop uses the **Midnight Studio** design language:
-
-| Token | Value | Usage |
-|---|---|---|
-| Background | `#050816` | Page background |
-| Surface | `#0F172A` | Cards, sidebar |
-| Elevated | `#172033` | Modals, dropdowns |
-| Border | `#263247` | Card borders |
-| Orange | `#FF7A1A` | Primary CTA, active state |
-| Teal | `#2DD4BF` | Secondary accent |
-| Heading font | Sora | All headings |
-| Body font | Inter | Body text, UI |
-
----
 
 ## License
 
@@ -406,8 +365,3 @@ MIT — see [LICENSE](./LICENSE)
 
 ---
 
-## Contributors
-
-- **CreatorLoop Team** — Initial design, architecture, and implementation
-
-Contributions welcome! Please read [CONTRIBUTING.md](./docs/CONTRIBUTING.md) before submitting a PR.
