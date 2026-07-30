@@ -20,6 +20,12 @@ const TYPE_CONFIG = {
     borderColor: 'rgba(239,68,68,0.2)',
     iconColor: '#EF4444',
   },
+  warning: {
+    icon: '!',
+    accentColor: '#F59E0B',
+    borderColor: 'rgba(245,158,11,0.2)',
+    iconColor: '#F59E0B',
+  },
   info: {
     icon: 'i',
     accentColor: '#FF7A1A',
@@ -53,6 +59,7 @@ export function ToastProvider({ children }) {
   const toast = {
     success: (msg, opts) => add(msg, 'success', opts?.duration ?? 3000),
     error:   (msg, opts) => add(msg, 'error',   opts?.duration ?? 4500),
+    warning: (msg, opts) => add(msg, 'warning', opts?.duration ?? 4000),
     info:    (msg, opts) => add(msg, 'info',     opts?.duration ?? 3000),
   }
 

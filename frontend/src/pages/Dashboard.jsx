@@ -56,7 +56,7 @@ export default function Dashboard() {
     setRenameState(null)
   }
 
-  const hasFilters = !!(search || platform)
+  const hasFilters  = !!(search || platform)
   const hasProjects = projects.length > 0 || hasFilters || loading
 
   return (

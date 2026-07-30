@@ -242,22 +242,43 @@ def _dummy_verify(password: str) -> None:
 
 async def _verify_google_token(credential: str, client_id: str | None) -> dict | None:
     """
-    Verify a Google ID token via Google's tokeninfo endpoint.
-    Optionally validates the ``aud`` claim when ``client_id`` is configured.
+    Verify a Google credential with Google's public endpoints.
+
+    Accepts two credential types produced by @react-oauth/google:
+      - ID token (JWT)  — returned by <GoogleLogin> component (flow="implicit")
+        Verified via: GET /tokeninfo?id_token=<token>
+      - Access token    — returned by useGoogleLogin({ flow: "implicit" })
+        Verified via: GET /oauth2/v3/userinfo  (Authorization: Bearer <token>)
+
+    Both paths return a dict with at least: sub, email, name, picture.
     """
     try:
         import httpx
         async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.get(
-                f"https://oauth2.googleapis.com/tokeninfo?id_token={credential}",
+
+            # ── Strategy 1: try as an ID token (JWT) ──────────────────────
+            id_resp = await client.get(
+                "https://oauth2.googleapis.com/tokeninfo",
+                params={"id_token": credential},
             )
-        if resp.status_code != 200:
-            return None
-        data = resp.json()
-        # Validate audience if a client_id is configured
-        if client_id and data.get("aud") != client_id:
-            return None
-        return data
+            if id_resp.status_code == 200:
+                data = id_resp.json()
+                # Validate audience claim when a client_id is configured
+                if client_id and data.get("aud") != client_id:
+                    logger.warning("Google token aud mismatch — expected %s got %s", client_id, data.get("aud"))
+                    return None
+                return data
+
+            # ── Strategy 2: try as an access token ────────────────────────
+            userinfo_resp = await client.get(
+                "https://www.googleapis.com/oauth2/v3/userinfo",
+                headers={"Authorization": f"Bearer {credential}"},
+            )
+            if userinfo_resp.status_code == 200:
+                return userinfo_resp.json()
+
+        return None
+
     except Exception as exc:
         logger.warning("Google token verification failed: %s", exc)
         return None

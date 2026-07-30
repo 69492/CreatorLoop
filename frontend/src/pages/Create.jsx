@@ -1,9 +1,13 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import SelectCard from '@/components/workspace/SelectCard'
 import StepIndicator from '@/components/workspace/StepIndicator'
+import UnsavedChangesModal from '@/components/workspace/UnsavedChangesModal'
+import ResumeDraftModal from '@/components/workspace/ResumeDraftModal'
+import { useUnsavedChanges } from '@/hooks/useUnsavedChanges'
+import { useDraft } from '@/hooks/useDraft'
 import {
   HiLightBulb,
   HiPencilAlt,
@@ -110,15 +114,90 @@ const LENGTHS = [
 
 const STEPS = ['Concept', 'Goal', 'Platform', 'Length', 'Review']
 
+// Auto-save interval in ms
+const AUTO_SAVE_MS = 2000
+
 export default function Create() {
   const navigate = useNavigate()
-  const [currentStep, setCurrentStep] = useState(0)
-  const [idea, setIdea] = useState('')
-  const [goal, setGoal] = useState(null)
-  const [platform, setPlatform] = useState(null)
-  const [length, setLength] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const { hasDraft, saveDraft, clearDraft, loadDraft } = useDraft()
 
+  const [currentStep, setCurrentStep] = useState(0)
+  const [idea, setIdea]               = useState('')
+  const [goal, setGoal]               = useState(null)
+  const [platform, setPlatform]       = useState(null)
+  const [length, setLength]           = useState(null)
+  const [loading, setLoading]         = useState(false)
+
+  // ── Modal states ────────────────────────────────────────────────────────────
+  const [showUnsavedModal, setShowUnsavedModal]   = useState(false)
+  const [showResumeModal, setShowResumeModal]     = useState(false)
+  const [draftSavedAt, setDraftSavedAt]           = useState(null)
+  const [proceedFn, setProceedFn]                 = useState(null)
+  const [cancelFn, setCancelFn]                   = useState(null)
+
+  // ── Dirty detection ─────────────────────────────────────────────────────────
+  const isDirty = idea.trim().length > 0 || goal !== null || platform !== null || length !== null
+
+  // ── Auto-save draft ──────────────────────────────────────────────────────────
+  const autoSaveTimer = useRef(null)
+  useEffect(() => {
+    if (!isDirty) return
+    clearTimeout(autoSaveTimer.current)
+    autoSaveTimer.current = setTimeout(() => {
+      saveDraft({ currentStep, idea, goal, platform, length })
+    }, AUTO_SAVE_MS)
+    return () => clearTimeout(autoSaveTimer.current)
+  }, [currentStep, idea, goal, platform, length, isDirty, saveDraft])
+
+  // ── On mount: check for existing draft ──────────────────────────────────────
+  useEffect(() => {
+    if (hasDraft) {
+      const draft = loadDraft()
+      if (draft) {
+        setDraftSavedAt(draft.savedAt || null)
+        setShowResumeModal(true)
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // ── Resume / Fresh handlers ─────────────────────────────────────────────────
+  const handleResumeDraft = useCallback(() => {
+    const draft = loadDraft()
+    if (draft) {
+      setCurrentStep(draft.currentStep ?? 0)
+      setIdea(draft.idea ?? '')
+      setGoal(draft.goal ?? null)
+      setPlatform(draft.platform ?? null)
+      setLength(draft.length ?? null)
+    }
+    setShowResumeModal(false)
+  }, [loadDraft])
+
+  const handleStartFresh = useCallback(() => {
+    clearDraft()
+    setShowResumeModal(false)
+  }, [clearDraft])
+
+  // ── Unsaved changes block ────────────────────────────────────────────────────
+  useUnsavedChanges(isDirty && !loading, (proceed, cancel) => {
+    setShowUnsavedModal(true)
+    setProceedFn(() => proceed)
+    setCancelFn(() => cancel)
+  })
+
+  const handleStay = () => {
+    setShowUnsavedModal(false)
+    cancelFn?.()
+  }
+
+  const handleDiscard = () => {
+    setShowUnsavedModal(false)
+    clearDraft()
+    proceedFn?.()
+  }
+
+  // ── Wizard logic ────────────────────────────────────────────────────────────
   const charCount = idea.length
   const MIN_CHARS = 20
 
@@ -144,6 +223,8 @@ export default function Create() {
     if (!isStepValid()) return
     setLoading(true)
     try {
+      // Clear draft before navigating — submission is the "save"
+      clearDraft()
       navigate('/results', { state: { idea, goal, platform, length } })
     } finally {
       setLoading(false)
@@ -154,233 +235,250 @@ export default function Create() {
   const isReady = charCount >= MIN_CHARS
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-3xl mx-auto space-y-6 animate-fade-in">
-      {/* Back */}
-      <button
-        type="button"
-        onClick={() => navigate('/workspace')}
-        className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-white transition-colors focus-visible:outline-none rounded-lg"
-      >
-        <HiArrowLeft size={14} />
-        Back to Workspace
-      </button>
+    <>
+      {/* ── Resume Draft Modal ── */}
+      <ResumeDraftModal
+        open={showResumeModal}
+        savedAt={draftSavedAt}
+        onResume={handleResumeDraft}
+        onFresh={handleStartFresh}
+      />
 
-      {/* Step indicator */}
-      <StepIndicator steps={STEPS} currentStep={currentStep} />
+      {/* ── Unsaved Changes Modal ── */}
+      <UnsavedChangesModal
+        open={showUnsavedModal}
+        onStay={handleStay}
+        onDiscard={handleDiscard}
+      />
 
-      {/* Main card */}
-      <div
-        className="rounded-2xl overflow-hidden"
-        style={{
-          background: 'rgba(15,23,42,0.9)',
-          border: '1px solid rgba(255,255,255,0.09)',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
-        }}
-      >
-        <div className="p-6 sm:p-7">
+      <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-3xl mx-auto space-y-6 animate-fade-in">
+        {/* Back */}
+        <button
+          type="button"
+          onClick={() => navigate('/workspace')}
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-white transition-colors focus-visible:outline-none rounded-lg"
+        >
+          <HiArrowLeft size={14} />
+          Back to Workspace
+        </button>
 
-          {/* ── Step 0: Concept ── */}
-          {currentStep === 0 && (
-            <div className="space-y-5 animate-fade-in">
-              <div>
-                <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">
-                  Describe your creative concept
-                </h2>
-                <p className="text-sm text-slate-500 leading-relaxed">
-                  Share the core idea, message, or subject matter. The more detail you provide, the richer the output.
-                </p>
-              </div>
+        {/* Step indicator */}
+        <StepIndicator steps={STEPS} currentStep={currentStep} />
 
-              <div>
-                <textarea
-                  value={idea}
-                  onChange={(e) => setIdea(e.target.value)}
-                  placeholder="e.g. How remote teams can use async communication to double deep work time and reduce meeting fatigue…"
-                  rows={7}
-                  className="w-full px-4 py-3.5 rounded-xl resize-none text-sm leading-relaxed text-slate-100 placeholder-slate-600
-                             focus:outline-none transition-all duration-200"
-                  style={{
-                    background: 'rgba(255,255,255,0.04)',
-                    border: '1px solid rgba(255,255,255,0.09)',
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = 'rgba(255,122,26,0.5)'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(255,122,26,0.1)'
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255,255,255,0.09)'
-                    e.target.style.boxShadow = 'none'
-                  }}
-                  aria-label="Creative concept description"
-                />
-                <div className="flex items-center justify-between mt-2 px-1">
-                  <span className="text-xs text-slate-500">
-                    {!isReady ? `${MIN_CHARS - charCount} more characters needed` : (
-                      <span className="flex items-center gap-1 text-emerald-400">
-                        <HiCheckCircle size={12} />
-                        Ready to continue
-                      </span>
-                    )}
-                  </span>
-                  <span className={`text-xs font-semibold tabular-nums ${isReady ? 'text-emerald-400' : 'text-slate-500'}`}>
-                    {charCount}
-                  </span>
+        {/* Main card */}
+        <div
+          className="rounded-2xl overflow-hidden"
+          style={{
+            background: 'rgba(15,23,42,0.9)',
+            border: '1px solid rgba(255,255,255,0.09)',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+          }}
+        >
+          <div className="p-6 sm:p-7">
+
+            {/* ── Step 0: Concept ── */}
+            {currentStep === 0 && (
+              <div className="space-y-5 animate-fade-in">
+                <div>
+                  <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">
+                    Describe your creative concept
+                  </h2>
+                  <p className="text-sm text-slate-500 leading-relaxed">
+                    Share the core idea, message, or subject matter. The more detail you provide, the richer the output.
+                  </p>
                 </div>
-                {/* Progress bar */}
-                <div className="mt-2 h-0.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
-                  <div
-                    className="h-full rounded-full transition-all duration-300"
+
+                <div>
+                  <textarea
+                    value={idea}
+                    onChange={(e) => setIdea(e.target.value)}
+                    placeholder="e.g. How remote teams can use async communication to double deep work time and reduce meeting fatigue…"
+                    rows={7}
+                    className="w-full px-4 py-3.5 rounded-xl resize-none text-sm leading-relaxed text-slate-100 placeholder-slate-600
+                               focus:outline-none transition-all duration-200"
                     style={{
-                      width: `${charProgress}%`,
-                      background: isReady
-                        ? 'linear-gradient(to right, #34d399, #10b981)'
-                        : 'linear-gradient(to right, #FF7A1A, #FF9A4D)',
+                      background: 'rgba(255,255,255,0.04)',
+                      border: '1px solid rgba(255,255,255,0.09)',
                     }}
+                    onFocus={(e) => {
+                      e.target.style.borderColor = 'rgba(255,122,26,0.5)'
+                      e.target.style.boxShadow = '0 0 0 3px rgba(255,122,26,0.1)'
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = 'rgba(255,255,255,0.09)'
+                      e.target.style.boxShadow = 'none'
+                    }}
+                    aria-label="Creative concept description"
                   />
+                  <div className="flex items-center justify-between mt-2 px-1">
+                    <span className="text-xs text-slate-500">
+                      {!isReady ? `${MIN_CHARS - charCount} more characters needed` : (
+                        <span className="flex items-center gap-1 text-emerald-400">
+                          <HiCheckCircle size={12} />
+                          Ready to continue
+                        </span>
+                      )}
+                    </span>
+                    <span className={`text-xs font-semibold tabular-nums ${isReady ? 'text-emerald-400' : 'text-slate-500'}`}>
+                      {charCount}
+                    </span>
+                  </div>
+                  {/* Progress bar */}
+                  <div className="mt-2 h-0.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.06)' }}>
+                    <div
+                      className="h-full rounded-full transition-all duration-300"
+                      style={{
+                        width: `${charProgress}%`,
+                        background: isReady
+                          ? 'linear-gradient(to right, #34d399, #10b981)'
+                          : 'linear-gradient(to right, #FF7A1A, #FF9A4D)',
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* ── Step 1: Goal ── */}
-          {currentStep === 1 && (
-            <div className="space-y-5 animate-fade-in">
-              <div>
-                <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Choose your primary goal</h2>
-                <p className="text-sm text-slate-500">Select the format or objective that best fits this content.</p>
-              </div>
-              <div className="grid gap-2.5">
-                {CREATIVE_GOALS.map((g) => (
-                  <SelectCard
-                    key={g.id}
-                    icon={g.icon}
-                    label={g.label}
-                    description={g.description}
-                    selected={goal === g.id}
-                    onClick={() => setGoal(g.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── Step 2: Platform ── */}
-          {currentStep === 2 && (
-            <div className="space-y-5 animate-fade-in">
-              <div>
-                <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Select target platform</h2>
-                <p className="text-sm text-slate-500">Where will this content primarily be published?</p>
-              </div>
-              <div className="grid sm:grid-cols-2 gap-2.5">
-                {PLATFORMS.map((p) => (
-                  <SelectCard
-                    key={p.id}
-                    icon={p.icon}
-                    label={p.label}
-                    description={p.description}
-                    selected={platform === p.id}
-                    onClick={() => setPlatform(p.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── Step 3: Length ── */}
-          {currentStep === 3 && (
-            <div className="space-y-5 animate-fade-in">
-              <div>
-                <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Choose content depth</h2>
-                <p className="text-sm text-slate-500">Determine the target length for your generated draft.</p>
-              </div>
-              <div className="grid gap-2.5">
-                {LENGTHS.map((l) => (
-                  <SelectCard
-                    key={l.id}
-                    label={l.label}
-                    description={l.description}
-                    selected={length === l.id}
-                    onClick={() => setLength(l.id)}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ── Step 4: Review ── */}
-          {currentStep === 4 && (
-            <div className="space-y-6 animate-fade-in">
-              <div>
-                <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Review your session</h2>
-                <p className="text-sm text-slate-500">Confirm your configuration before launching the AI pipeline.</p>
-              </div>
-
-              <div
-                className="rounded-xl overflow-hidden"
-                style={{ border: '1px solid rgba(255,255,255,0.08)' }}
-              >
-                <div className="p-5" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Concept</p>
-                  <p className="text-sm text-slate-200 leading-relaxed">{idea}</p>
+            {/* ── Step 1: Goal ── */}
+            {currentStep === 1 && (
+              <div className="space-y-5 animate-fade-in">
+                <div>
+                  <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Choose your primary goal</h2>
+                  <p className="text-sm text-slate-500">Select the format or objective that best fits this content.</p>
                 </div>
-                <div className="grid grid-cols-3 divide-x" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', borderLeftColor: 'transparent' }}>
-                  {[
-                    { label: 'Goal',     value: CREATIVE_GOALS.find((g) => g.id === goal)?.label },
-                    { label: 'Platform', value: PLATFORMS.find((p) => p.id === platform)?.label },
-                    { label: 'Length',   value: length ? length.charAt(0).toUpperCase() + length.slice(1) : '—' },
-                  ].map((item, idx) => (
-                    <div key={item.label} className="p-4"
-                         style={{ borderLeft: idx > 0 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{item.label}</p>
-                      <p className="text-sm font-semibold text-white">{item.value ?? '—'}</p>
-                    </div>
+                <div className="grid gap-2.5">
+                  {CREATIVE_GOALS.map((g) => (
+                    <SelectCard
+                      key={g.id}
+                      icon={g.icon}
+                      label={g.label}
+                      description={g.description}
+                      selected={goal === g.id}
+                      onClick={() => setGoal(g.id)}
+                    />
                   ))}
                 </div>
               </div>
+            )}
 
-              <div
-                className="flex items-center gap-2.5 p-3.5 rounded-xl"
-                style={{ background: 'rgba(255,122,26,0.06)', border: '1px solid rgba(255,122,26,0.15)' }}
-              >
-                <HiSparkles size={14} style={{ color: '#FF9A4D', flexShrink: 0 }} />
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  The AI pipeline will generate a complete draft including brainstorming, creative direction, full content, and platform adaptations.
-                </p>
+            {/* ── Step 2: Platform ── */}
+            {currentStep === 2 && (
+              <div className="space-y-5 animate-fade-in">
+                <div>
+                  <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Select target platform</h2>
+                  <p className="text-sm text-slate-500">Where will this content primarily be published?</p>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-2.5">
+                  {PLATFORMS.map((p) => (
+                    <SelectCard
+                      key={p.id}
+                      icon={p.icon}
+                      label={p.label}
+                      description={p.description}
+                      selected={platform === p.id}
+                      onClick={() => setPlatform(p.id)}
+                    />
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* ── Actions ── */}
-          <div
-            className="flex items-center gap-3 mt-8 pt-5"
-            style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}
-          >
-            {currentStep > 0 && (
-              <Button variant="ghost" size="sm" onClick={handleBack}>
-                <HiArrowLeft size={13} />
-                Back
-              </Button>
+            {/* ── Step 3: Length ── */}
+            {currentStep === 3 && (
+              <div className="space-y-5 animate-fade-in">
+                <div>
+                  <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Choose content depth</h2>
+                  <p className="text-sm text-slate-500">Determine the target length for your generated draft.</p>
+                </div>
+                <div className="grid gap-2.5">
+                  {LENGTHS.map((l) => (
+                    <SelectCard
+                      key={l.id}
+                      label={l.label}
+                      description={l.description}
+                      selected={length === l.id}
+                      onClick={() => setLength(l.id)}
+                    />
+                  ))}
+                </div>
+              </div>
             )}
-            <div className="flex-1" />
-            {currentStep < STEPS.length - 1 ? (
-              <Button variant="primary" size="md" onClick={handleNext} disabled={!isStepValid()}>
-                Continue
-              </Button>
-            ) : (
-              <Button
-                variant="primary"
-                size="md"
-                onClick={handleSubmit}
-                disabled={!isStepValid()}
-                loading={loading}
-              >
-                <HiSparkles size={14} />
-                Generate Content
-              </Button>
+
+            {/* ── Step 4: Review ── */}
+            {currentStep === 4 && (
+              <div className="space-y-6 animate-fade-in">
+                <div>
+                  <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Review your session</h2>
+                  <p className="text-sm text-slate-500">Confirm your configuration before launching the AI pipeline.</p>
+                </div>
+
+                <div
+                  className="rounded-xl overflow-hidden"
+                  style={{ border: '1px solid rgba(255,255,255,0.08)' }}
+                >
+                  <div className="p-5" style={{ background: 'rgba(255,255,255,0.03)' }}>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Concept</p>
+                    <p className="text-sm text-slate-200 leading-relaxed">{idea}</p>
+                  </div>
+                  <div className="grid grid-cols-3 divide-x" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', borderLeftColor: 'transparent' }}>
+                    {[
+                      { label: 'Goal',     value: CREATIVE_GOALS.find((g) => g.id === goal)?.label },
+                      { label: 'Platform', value: PLATFORMS.find((p) => p.id === platform)?.label },
+                      { label: 'Length',   value: length ? length.charAt(0).toUpperCase() + length.slice(1) : '—' },
+                    ].map((item, idx) => (
+                      <div key={item.label} className="p-4"
+                           style={{ borderLeft: idx > 0 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{item.label}</p>
+                        <p className="text-sm font-semibold text-white">{item.value ?? '—'}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  className="flex items-center gap-2.5 p-3.5 rounded-xl"
+                  style={{ background: 'rgba(255,122,26,0.06)', border: '1px solid rgba(255,122,26,0.15)' }}
+                >
+                  <HiSparkles size={14} style={{ color: '#FF9A4D', flexShrink: 0 }} />
+                  <p className="text-xs text-slate-400 leading-relaxed">
+                    The AI pipeline will generate a complete draft including brainstorming, creative direction, full content, and platform adaptations.
+                  </p>
+                </div>
+              </div>
             )}
+
+            {/* ── Actions ── */}
+            <div
+              className="flex items-center gap-3 mt-8 pt-5"
+              style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}
+            >
+              {currentStep > 0 && (
+                <Button variant="ghost" size="sm" onClick={handleBack}>
+                  <HiArrowLeft size={13} />
+                  Back
+                </Button>
+              )}
+              <div className="flex-1" />
+              {currentStep < STEPS.length - 1 ? (
+                <Button variant="primary" size="md" onClick={handleNext} disabled={!isStepValid()}>
+                  Continue
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="md"
+                  onClick={handleSubmit}
+                  disabled={!isStepValid()}
+                  loading={loading}
+                >
+                  <HiSparkles size={14} />
+                  Generate Content
+                </Button>
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }

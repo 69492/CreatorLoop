@@ -160,7 +160,7 @@ export function SignInPage() {
           <p className="text-sm text-slate-500">Sign in to your CreatorLoop account.</p>
         </div>
 
-        <GoogleOAuthButton onSuccess={() => { toast.success('Signed in with Google!'); navigate(from, { replace: true }) }} mode="login" />
+        <GoogleOAuthButton mode="login" />
 
         <div className="flex items-center gap-3 my-5">
           <div className="flex-1 h-px" style={{ background: 'var(--color-border)' }} />
@@ -339,7 +339,7 @@ export function SignUpPage() {
           <p className="text-sm text-slate-500">Free forever. No credit card required.</p>
         </div>
 
-        <GoogleOAuthButton onSuccess={() => { toast.success('Account created with Google!'); navigate('/workspace', { replace: true }) }} mode="signup" />
+        <GoogleOAuthButton mode="signup" />
 
         <div className="flex items-center gap-3 my-5">
           <div className="flex-1 h-px" style={{ background: 'var(--color-border)' }} />

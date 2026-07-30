@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom'
 import RootLayout from '@/components/layout/RootLayout'
 import WorkspaceLayout from '@/components/layout/WorkspaceLayout'
 import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import GuestRoute from '@/components/auth/GuestRoute'
 
 // ── Eagerly-loaded (critical path, tiny) ────────────────────────────────────
 import Home from '@/pages/Home'
@@ -59,11 +60,24 @@ export const router = createBrowserRouter([
     ],
   },
 
-  // ── Auth pages (standalone, no workspace shell) ───────────────────────────
-  { path: '/auth',                  element: <AuthPage /> },
-  { path: '/auth/signin',           element: <SignInPage /> },
-  { path: '/auth/signup',           element: <SignUpPage /> },
-  { path: '/auth/forgot-password',  element: <ForgotPasswordPage /> },
+  // ── Auth pages — only accessible to unauthenticated users ─────────────────
+  // GuestRoute redirects authenticated users to /workspace
+  {
+    path: '/auth',
+    element: <GuestRoute><AuthPage /></GuestRoute>,
+  },
+  {
+    path: '/auth/signin',
+    element: <GuestRoute><SignInPage /></GuestRoute>,
+  },
+  {
+    path: '/auth/signup',
+    element: <GuestRoute><SignUpPage /></GuestRoute>,
+  },
+  {
+    path: '/auth/forgot-password',
+    element: <GuestRoute><ForgotPasswordPage /></GuestRoute>,
+  },
 
   // ── Workspace (protected app shell) ──────────────────────────────────────
   {

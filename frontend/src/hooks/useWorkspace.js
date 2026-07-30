@@ -55,11 +55,8 @@ export function useWorkspace() {
       workspaceService.generate(payload),
       advanceStages(),
     ]).catch((err) => {
-      const message =
-        err?.response?.data?.detail ??
-        err?.message ??
-        'Something went wrong. Please try again.'
-      setError(message)
+      // Error message is already normalised by the api.js interceptor
+      setError(err.message || 'Something went wrong. Please try again.')
       setStatus('error')
       setCurrentStage(-1)
       throw err

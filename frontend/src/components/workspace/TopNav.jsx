@@ -32,6 +32,7 @@ export default function TopNav() {
     setDropdownOpen(false)
     logout()
     toast.success('Signed out successfully')
+    // Use replace so the back button cannot return to the dashboard
     navigate('/', { replace: true })
   }
 

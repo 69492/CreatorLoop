@@ -1,1 +1,0 @@
-import{j as n}from"./index-KC01NLyY.js";function f({children:a,className:e="",hover:s=!1,compact:r=!1,elevated:t=!1,id:d,...o}){let c=s?"card-hover":t?"card-elevated":"card";const l=r?"p-4":"p-6";return n.jsx("div",{id:d,className:`${c} ${l} ${e}`,...o,children:a})}export{f as C};

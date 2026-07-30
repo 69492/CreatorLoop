@@ -29,12 +29,17 @@ export function useProjects() {
     setError(null)
     try {
       const data = await projectService.list(opts)
-      setProjects(data.projects)
-      setTotal(data.total)
-      setStats(data.stats)
+      setProjects(data.projects ?? [])
+      setTotal(data.total ?? 0)
+      setStats(data.stats ?? null)
     } catch (err) {
       setError(err.message)
-      toast.error('Failed to load projects')
+      // Only show error toast for non-empty states — zero projects is a valid response
+      const isAuthError = err.message?.toLowerCase().includes('401') ||
+                          err.message?.toLowerCase().includes('unauthorized')
+      if (!isAuthError) {
+        toast.error('Unable to load projects. Please try again.')
+      }
     } finally {
       setLoading(false)
     }

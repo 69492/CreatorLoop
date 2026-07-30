@@ -2,8 +2,9 @@ import { createContext, useContext, useState, useCallback, useEffect } from 'rea
 import { authService } from '@/services/authService'
 import apiClient from '@/services/api'
 
-const TOKEN_KEY = 'cl_token'
-const USER_KEY  = 'cl_user'
+const TOKEN_KEY  = 'cl_token'
+const USER_KEY   = 'cl_user'
+const DRAFT_KEY  = 'cl_create_draft'
 
 const AuthContext = createContext(null)
 
@@ -71,8 +72,17 @@ export function AuthProvider({ children }) {
   }, [_persistSession])
 
   const logout = useCallback(() => {
+    // Clear all auth tokens and user data
     localStorage.removeItem(TOKEN_KEY)
     localStorage.removeItem(USER_KEY)
+    // Clear draft data on logout
+    localStorage.removeItem(DRAFT_KEY)
+    // Remove all cl_ prefixed keys (project cache, etc.)
+    Object.keys(localStorage).forEach((key) => {
+      if (key.startsWith('cl_')) localStorage.removeItem(key)
+    })
+    // Clear session storage entirely
+    try { sessionStorage.clear() } catch { /* ignore */ }
     delete apiClient.defaults.headers.common.Authorization
     setToken(null)
     setUser(null)
