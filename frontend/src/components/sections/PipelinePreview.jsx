@@ -1,74 +1,48 @@
 import SectionWrapper from '@/components/common/SectionWrapper'
 import SectionHeader from '@/components/common/SectionHeader'
-import {
-  HiLightBulb,
-  HiSparkles,
-  HiMap,
-  HiPencilAlt,
-  HiSwitchHorizontal,
-  HiArchive,
-} from 'react-icons/hi'
 
 const PIPELINE_STEPS = [
   {
-    step: 1,
-    icon: <HiLightBulb size={20} />,
-    title: 'Idea',
-    description: 'Start with any raw idea — a theme, a question, or a topic you want to explore.',
-    accent: 'border-amber-500/25 text-amber-400',
-    bg: 'bg-amber-500/10',
-    dotColor: 'bg-amber-400',
-    lineColor: 'from-amber-400/30',
+    step: '01',
+    emoji: '🧠',
+    title: 'Idea Input',
+    description: 'Describe your concept in plain language. Any topic, any format, any goal.',
+    color: '#F59E0B',
   },
   {
-    step: 2,
-    icon: <HiSparkles size={20} />,
+    step: '02',
+    emoji: '✨',
     title: 'Brainstorm',
-    description: 'AI generates multiple creative angles, hooks, and concepts to explore.',
-    accent: 'border-violet-500/25 text-violet-400',
-    bg: 'bg-violet-500/10',
-    dotColor: 'bg-violet-400',
-    lineColor: 'from-violet-400/30',
+    description: 'AI generates multiple creative angles, hooks, and narrative directions to explore.',
+    color: '#FF7A1A',
   },
   {
-    step: 3,
-    icon: <HiMap size={20} />,
+    step: '03',
+    emoji: '🎯',
     title: 'Direction',
-    description: 'A recommended narrative path is selected with tone, structure, and key messaging.',
-    accent: 'border-brand-purple/30 text-brand-purple-light',
-    bg: 'bg-brand-purple/10',
-    dotColor: 'bg-brand-purple-light',
-    lineColor: 'from-brand-purple-light/30',
+    description: 'A recommended creative path is selected with tone, structure, and key messaging.',
+    color: '#2DD4BF',
   },
   {
-    step: 4,
-    icon: <HiPencilAlt size={20} />,
+    step: '04',
+    emoji: '📝',
     title: 'Draft',
-    description: 'Full content is written — script, story, or article — matched to your chosen format.',
-    accent: 'border-blue-500/25 text-brand-blue-light',
-    bg: 'bg-blue-500/10',
-    dotColor: 'bg-brand-blue-light',
-    lineColor: 'from-brand-blue-light/30',
+    description: 'Full content is written — script, article, or story — matched to your chosen format.',
+    color: '#818CF8',
   },
   {
-    step: 5,
-    icon: <HiSwitchHorizontal size={20} />,
+    step: '05',
+    emoji: '🔄',
     title: 'Adapt',
     description: 'The draft is reformatted natively for every target platform — automatically.',
-    accent: 'border-cyan-500/25 text-cyan-400',
-    bg: 'bg-cyan-500/10',
-    dotColor: 'bg-cyan-400',
-    lineColor: 'from-cyan-400/30',
+    color: '#F472B6',
   },
   {
-    step: 6,
-    icon: <HiArchive size={20} />,
+    step: '06',
+    emoji: '🚀',
     title: 'Publish',
     description: 'Receive your complete creative package — ready to export and publish anywhere.',
-    accent: 'border-emerald-500/25 text-emerald-400',
-    bg: 'bg-emerald-500/10',
-    dotColor: 'bg-emerald-400',
-    lineColor: 'from-emerald-400/30',
+    color: '#22C55E',
   },
 ]
 
@@ -77,75 +51,72 @@ export default function PipelinePreview() {
     <SectionWrapper id="pipeline">
       <SectionHeader
         label="How It Works"
-        heading={
-          <>
-            A 6-Step Pipeline From{' '}
-            <span className="gradient-text">Idea to Publish</span>
-          </>
-        }
-        subheading="Every CreatorLoop session runs your content through a structured AI workflow that handles all stages of production."
+        heading="A 6-Step Pipeline From Idea to Publish"
+        subheading="Every session runs your content through a structured AI workflow that handles all stages of production."
       />
 
-      {/* Desktop horizontal timeline */}
-      <div className="hidden lg:grid lg:grid-cols-6 gap-3 mb-4">
+      {/* Desktop grid */}
+      <div className="hidden lg:grid lg:grid-cols-6 gap-4 mb-6">
         {PIPELINE_STEPS.map((step, i) => (
           <div key={step.step} className="flex flex-col items-center text-center group cursor-default">
-            {/* Connector line + node */}
+            {/* Connector */}
             <div className="relative w-full flex items-center justify-center mb-5">
               {i > 0 && (
                 <div className="absolute right-1/2 top-1/2 -translate-y-1/2 w-1/2 h-px"
-                  style={{ background: 'linear-gradient(to right, rgba(255,255,255,0.04), rgba(255,255,255,0.12))' }}
-                />
+                     style={{ background: 'linear-gradient(to right, transparent, var(--color-border))' }} />
               )}
               {i < PIPELINE_STEPS.length - 1 && (
                 <div className="absolute left-1/2 top-1/2 -translate-y-1/2 w-1/2 h-px"
-                  style={{ background: 'linear-gradient(to right, rgba(255,255,255,0.12), rgba(255,255,255,0.04))' }}
-                />
+                     style={{ background: 'linear-gradient(to right, var(--color-border), transparent)' }} />
               )}
 
-              {/* Step node */}
-              <div className={`relative z-10 flex items-center justify-center w-11 h-11 rounded-2xl ${step.bg} border ${step.accent} transition-all duration-300 group-hover:scale-110`}
-                   style={{ boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.06)' }}>
-                {step.icon}
-                <span className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center rounded-full bg-navy-800 border border-white/12 text-[9px] font-bold text-gray-500">
+              {/* Node */}
+              <div className="relative z-10 w-12 h-12 rounded-xl flex items-center justify-center text-xl transition-all duration-200 group-hover:scale-110"
+                   style={{
+                     background: `${step.color}10`,
+                     border: `1px solid ${step.color}25`,
+                   }}
+                   onMouseEnter={(e) => { e.currentTarget.style.boxShadow = `0 0 20px ${step.color}25` }}
+                   onMouseLeave={(e) => { e.currentTarget.style.boxShadow = 'none' }}>
+                {step.emoji}
+                <span className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center rounded-full text-[9px] font-bold"
+                      style={{ background: 'var(--color-elevated)', border: '1px solid var(--color-border)', color: 'var(--color-text-muted)' }}>
                   {step.step}
                 </span>
               </div>
             </div>
 
-            <h3 className="text-white font-semibold text-sm mb-1.5 group-hover:text-brand-purple-light transition-colors">{step.title}</h3>
-            <p className="text-gray-600 text-xs leading-relaxed px-1">{step.description}</p>
+            <h3 className="text-white font-semibold text-sm mb-1.5 group-hover:transition-colors duration-200" style={{ fontFamily: "'Sora', sans-serif" }}>
+              {step.title}
+            </h3>
+            <p className="text-slate-600 text-xs leading-relaxed px-1 group-hover:text-slate-500 transition-colors">
+              {step.description}
+            </p>
           </div>
         ))}
       </div>
 
-      {/* Mobile vertical timeline */}
+      {/* Mobile vertical */}
       <div className="lg:hidden space-y-0">
         {PIPELINE_STEPS.map((step, i) => (
           <div key={step.step} className="flex gap-4 relative pb-1">
-            {/* Vertical connector */}
             {i < PIPELINE_STEPS.length - 1 && (
-              <div
-                className="absolute left-5 top-11 bottom-0 w-px z-0"
-                style={{
-                  background: 'linear-gradient(to bottom, rgba(255,255,255,0.12), rgba(255,255,255,0.03))',
-                  height: 'calc(100% - 2.75rem)',
-                }}
-              />
+              <div className="absolute left-5 top-11 w-px z-0"
+                   style={{ background: 'var(--color-border)', height: 'calc(100% - 2.75rem)' }} />
             )}
 
-            {/* Icon node */}
-            <div className={`relative z-10 flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl ${step.bg} border ${step.accent} mt-1`}>
-              {step.icon}
+            <div className="relative z-10 flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-xl text-lg mt-1"
+                 style={{ background: `${step.color}10`, border: `1px solid ${step.color}22` }}>
+              {step.emoji}
             </div>
 
-            {/* Content */}
-            <div className="glass-card flex-1 p-4 mb-3">
+            <div className="flex-1 p-4 mb-3 rounded-xl"
+                 style={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)' }}>
               <div className="flex items-center gap-2.5 mb-1.5">
-                <span className="text-xs font-mono font-bold text-gray-600">0{step.step}</span>
-                <h3 className="text-white font-semibold text-sm">{step.title}</h3>
+                <span className="text-[11px] font-bold" style={{ color: step.color }}>{step.step}</span>
+                <h3 className="text-white font-semibold text-sm" style={{ fontFamily: "'Sora', sans-serif" }}>{step.title}</h3>
               </div>
-              <p className="text-gray-500 text-sm leading-relaxed">{step.description}</p>
+              <p className="text-slate-500 text-sm leading-relaxed">{step.description}</p>
             </div>
           </div>
         ))}

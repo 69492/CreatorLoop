@@ -1,8 +1,8 @@
 /**
- * StepIndicator — premium progress indicator for the Create page.
+ * StepIndicator — Midnight Studio progress indicator
  */
 export default function StepIndicator({ steps, currentStep }) {
-  const progress = Math.round(((currentStep) / (steps.length - 1)) * 100)
+  const progress = Math.round((currentStep / (steps.length - 1)) * 100)
 
   return (
     <div
@@ -21,32 +21,31 @@ export default function StepIndicator({ steps, currentStep }) {
             <div key={step} className="flex flex-col items-center gap-1.5 flex-1">
               <div
                 className={`w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold transition-all duration-300 ${
-                  done
-                    ? 'text-white'
-                    : active
-                      ? 'text-brand-purple-light scale-110'
-                      : 'text-gray-700'
+                  active ? 'scale-110' : ''
                 }`}
                 style={
                   done
-                    ? { background: 'linear-gradient(135deg, #7c3aed, #6d28d9)', boxShadow: '0 2px 8px rgba(124,58,237,0.3)' }
+                    ? { background: 'rgba(34,197,94,0.15)', border: '1px solid rgba(34,197,94,0.35)', color: '#22C55E' }
                     : active
-                      ? { background: 'rgba(124,58,237,0.12)', border: '2px solid rgba(167,139,250,0.6)' }
-                      : { background: 'rgba(255,255,255,0.05)', border: '2px solid rgba(255,255,255,0.1)' }
+                      ? { background: 'rgba(255,122,26,0.12)', border: '2px solid rgba(255,122,26,0.6)', color: '#FF7A1A' }
+                      : { background: 'rgba(255,255,255,0.04)', border: '2px solid rgba(255,255,255,0.1)', color: '#64748B' }
                 }
               >
                 {done ? (
                   <svg viewBox="0 0 12 12" width="11" height="11" fill="none" aria-hidden="true">
-                    <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M2 6l3 3 5-5" stroke="#22C55E" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 ) : (
                   i + 1
                 )}
               </div>
               <span
-                className={`hidden sm:block text-[10px] font-semibold tracking-wide transition-colors duration-200 ${
-                  active ? 'text-brand-purple-light' : done ? 'text-gray-500' : 'text-gray-700'
-                }`}
+                className="hidden sm:block text-[10px] font-semibold tracking-wide transition-colors duration-200"
+                style={
+                  active ? { color: '#FF7A1A' }
+                  : done  ? { color: '#94A3B8' }
+                  : { color: '#475569' }
+                }
               >
                 {step}
               </span>
@@ -56,14 +55,13 @@ export default function StepIndicator({ steps, currentStep }) {
       </div>
 
       {/* Progress bar */}
-      <div className="relative h-1 rounded-full overflow-hidden mx-3.5"
-           style={{ background: 'rgba(255,255,255,0.06)' }}>
+      <div className="relative h-0.5 rounded-full overflow-hidden mx-3.5"
+           style={{ background: 'var(--color-border)' }}>
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{
             width: `${progress}%`,
-            background: 'linear-gradient(to right, #7c3aed, #a78bfa)',
-            boxShadow: progress > 0 ? '0 0 8px rgba(124,58,237,0.4)' : 'none',
+            background: 'linear-gradient(to right, #FF7A1A, #2DD4BF)',
           }}
         />
       </div>

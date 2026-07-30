@@ -1,26 +1,10 @@
 """
-SQLAlchemy ORM models for Phase 4 — Project Management.
+SQLAlchemy ORM models — Projects.
 
-Schema:
-    projects
-        id              UUID primary key    
-        user_id
-        title           project name (user editable)
-        idea            original prompt
-        goal            creative goal identifier
-        platform        target platform
-        length          short | medium | long
-        -- AI sections (JSON columns) --
-        analysis        dict
-        brainstorm      list
-        recommended_direction   dict
-        content         dict
-        adaptations     dict
-        creative_suggestions    dict
-        -- Metadata --
-        word_count      int  (auto-computed from content.draft)
-        created_at      datetime UTC
-        updated_at      datetime UTC
+Compatible with both SQLite (development) and PostgreSQL (production).
+JSON columns use sqlalchemy.types.JSON which maps to:
+  - TEXT (JSON-encoded) on SQLite
+  - JSONB on PostgreSQL (via dialect negotiation)
 """
 from __future__ import annotations
 
@@ -28,7 +12,7 @@ import uuid
 from datetime import datetime, timezone
 
 from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.dialects.sqlite import JSON
+from sqlalchemy.types import JSON
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.database import Base
@@ -48,7 +32,7 @@ class Project(Base):
         default=lambda: str(uuid.uuid4()),
     )
 
-    # ── Ownership (nullable for backward compat with existing rows) ────────────
+    # ── Ownership ──────────────────────────────────────────────────────────────
     user_id: Mapped[str | None] = mapped_column(
         String(36),
         ForeignKey("users.id", ondelete="CASCADE"),
@@ -63,7 +47,7 @@ class Project(Base):
     platform: Mapped[str] = mapped_column(String(100), nullable=False)
     length: Mapped[str] = mapped_column(String(20), nullable=False)
 
-    # ── AI-generated content (stored as JSON) ──────────────────────────────────
+    # ── AI-generated content (database-agnostic JSON) ──────────────────────────
     analysis: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     brainstorm: Mapped[list | None] = mapped_column(JSON, nullable=True)
     recommended_direction: Mapped[dict | None] = mapped_column(JSON, nullable=True)

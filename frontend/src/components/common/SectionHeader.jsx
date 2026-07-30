@@ -1,5 +1,5 @@
 /**
- * Consistent section header: label + heading + subheading.
+ * SectionHeader — Midnight Studio section header
  * center: true (default) | false
  */
 export default function SectionHeader({ label, heading, subheading, center = true }) {
@@ -11,9 +11,9 @@ export default function SectionHeader({ label, heading, subheading, center = tru
         <span
           className="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-widest w-fit"
           style={{
-            color: 'rgba(167,139,250,1)',
-            background: 'rgba(124,58,237,0.08)',
-            border: '1px solid rgba(124,58,237,0.22)',
+            color: '#FF7A1A',
+            background: 'rgba(255,122,26,0.07)',
+            border: '1px solid rgba(255,122,26,0.18)',
           }}
         >
           {label}

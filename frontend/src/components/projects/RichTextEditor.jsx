@@ -39,9 +39,15 @@ export default function RichTextEditor({ value, onChange, placeholder = 'Start t
   ]
 
   return (
-    <div className={`flex flex-col rounded-xl border border-white/10 overflow-hidden ${focused ? 'border-brand-purple/50 ring-1 ring-brand-purple/30' : ''} ${className}`}>
+    <div
+      className={`flex flex-col rounded-xl overflow-hidden ${className}`}
+      style={{
+        border: focused ? '1px solid rgba(255,122,26,0.45)' : '1px solid rgba(255,255,255,0.1)',
+        boxShadow: focused ? '0 0 0 3px rgba(255,122,26,0.1)' : 'none',
+      }}
+    >
       {/* Toolbar */}
-      <div className="flex flex-wrap gap-0.5 p-2 bg-navy-700/50 border-b border-white/10">
+      <div className="flex flex-wrap gap-0.5 p-2 border-b" style={{ background: 'rgba(23,32,51,0.7)', borderColor: 'rgba(255,255,255,0.08)' }}>
         {toolbarButtons.map((btn) => (
           <button
             key={btn.title}

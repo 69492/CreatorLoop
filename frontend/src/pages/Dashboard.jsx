@@ -9,6 +9,7 @@ import {
   HiFilter,
   HiSearch,
   HiX,
+  HiSparkles,
 } from 'react-icons/hi'
 
 import Button from '@/components/ui/Button'
@@ -20,12 +21,11 @@ import FilterPanel from '@/components/projects/FilterPanel'
 import { useProjects } from '@/hooks/useProjects'
 
 const PIPELINE_LABELS = [
-  { label: 'Idea',       color: 'bg-amber-400' },
-  { label: 'Brainstorm', color: 'bg-violet-400' },
-  { label: 'Direction',  color: 'bg-brand-purple-light' },
-  { label: 'Draft',      color: 'bg-brand-blue-light' },
-  { label: 'Adapt',      color: 'bg-cyan-400' },
-  { label: 'Publish',    color: 'bg-emerald-400' },
+  { label: 'Understand',  emoji: '🧠', color: 'rgba(245,158,11,0.7)' },
+  { label: 'Brainstorm',  emoji: '✨', color: 'rgba(255,122,26,0.7)' },
+  { label: 'Write',       emoji: '📝', color: 'rgba(45,212,191,0.7)' },
+  { label: 'Optimise',    emoji: '🎯', color: 'rgba(96,165,250,0.7)' },
+  { label: 'Polish',      emoji: '🚀', color: 'rgba(34,197,94,0.7)'  },
 ]
 
 export default function Dashboard() {
@@ -57,17 +57,18 @@ export default function Dashboard() {
   }
 
   const hasFilters = !!(search || platform)
+  const hasProjects = projects.length > 0 || hasFilters || loading
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-6xl mx-auto space-y-7 animate-fade-in">
 
       {/* ── Header ── */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">
+          <h1 className="text-2xl font-bold text-white tracking-tight" style={{ fontFamily: "'Sora', sans-serif" }}>
             {firstName}'s Projects
           </h1>
-          <p className="text-sm text-gray-600 mt-0.5">
+          <p className="text-sm text-slate-500 mt-0.5 leading-relaxed">
             Manage, edit, and export your creative library.
           </p>
         </div>
@@ -80,35 +81,56 @@ export default function Dashboard() {
       </div>
 
       {/* ── Stats ── */}
-      {stats && <StatsGrid stats={stats} />}
+      {stats && (
+        <div className="space-y-2">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-slate-600 px-0.5">
+            Activity Overview
+          </p>
+          <StatsGrid stats={stats} />
+        </div>
+      )}
 
       {/* ── Zero state (no projects, no filters) ── */}
-      {!projects.length && !loading && !hasFilters && (
+      {!hasProjects && !loading && (
         <div
-          className="glass-card py-16 text-center"
-          style={{ background: 'linear-gradient(160deg, rgba(12,17,32,0.8) 0%, rgba(8,13,26,0.9) 100%)' }}
+          className="rounded-2xl py-16 px-8 text-center"
+          style={{
+            background: 'linear-gradient(160deg, rgba(15,23,42,0.9) 0%, rgba(8,13,26,0.95) 100%)',
+            border: '1px solid rgba(255,255,255,0.07)',
+          }}
         >
+          {/* Icon */}
           <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-5 text-brand-purple-light"
-            style={{ background: 'rgba(124,58,237,0.1)', border: '1px solid rgba(124,58,237,0.2)' }}
+            className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6"
+            style={{
+              background: 'rgba(255,122,26,0.08)',
+              border: '1px solid rgba(255,122,26,0.15)',
+              color: '#FF9A4D',
+            }}
           >
-            <HiFolderOpen size={24} />
+            <HiFolderOpen size={26} />
           </div>
-          <h3 className="text-white font-semibold text-lg mb-2">No projects yet</h3>
-          <p className="text-gray-600 text-sm mb-8 max-w-xs mx-auto leading-relaxed">
-            Start a creation session to generate and save your first AI-crafted content.
+
+          <h3 className="text-white font-bold text-xl mb-3 tracking-tight" style={{ fontFamily: "'Sora', sans-serif" }}>
+            Your creative library is empty
+          </h3>
+          <p className="text-slate-500 text-sm mb-8 max-w-sm mx-auto leading-relaxed">
+            Start a creation session and your first AI-crafted project will appear here. Each project is saved automatically.
           </p>
 
           {/* Pipeline flow */}
           <div className="flex items-center justify-center gap-2 mb-8 flex-wrap">
             {PIPELINE_LABELS.map((s, i) => (
               <div key={s.label} className="flex items-center gap-2">
-                <div className="flex items-center gap-1.5">
-                  <span className={`w-2 h-2 rounded-full ${s.color}`} />
-                  <span className="text-xs text-gray-600 font-medium">{s.label}</span>
+                <div
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.07)' }}
+                >
+                  <span className="text-xs">{s.emoji}</span>
+                  <span style={{ color: s.color }}>{s.label}</span>
                 </div>
                 {i < PIPELINE_LABELS.length - 1 && (
-                  <HiArrowRight size={9} className="text-gray-800" />
+                  <HiArrowRight size={9} className="text-slate-700 shrink-0" />
                 )}
               </div>
             ))}
@@ -116,7 +138,7 @@ export default function Dashboard() {
 
           <Link to="/create">
             <Button variant="primary" size="lg">
-              <HiPencilAlt size={16} />
+              <HiSparkles size={16} />
               Start Your First Creation
             </Button>
           </Link>
@@ -124,7 +146,7 @@ export default function Dashboard() {
       )}
 
       {/* ── Search + Filters ── */}
-      {(projects.length > 0 || hasFilters) && (
+      {hasProjects && (
         <div className="space-y-2.5">
           <SearchBar
             value={search}
@@ -143,7 +165,7 @@ export default function Dashboard() {
       {loading ? (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="glass-card p-5 h-44">
+            <div key={i} className="card p-5 h-44">
               <div className="space-y-3 mb-6">
                 <div className="skeleton h-4 w-4/5" />
                 <div className="skeleton h-3 w-2/5" />
@@ -151,6 +173,9 @@ export default function Dashboard() {
               <div className="space-y-2">
                 <div className="skeleton h-3 w-1/3" />
                 <div className="skeleton h-3 w-3/5" />
+              </div>
+              <div className="mt-auto pt-3">
+                <div className="skeleton h-3 w-2/5" />
               </div>
             </div>
           ))}
@@ -171,16 +196,16 @@ export default function Dashboard() {
 
       {/* ── Empty search state ── */}
       {!loading && projects.length === 0 && hasFilters && (
-        <div className="glass-card text-center py-14">
+        <div className="card text-center py-16">
           <div
-            className="w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-4 text-gray-500"
-            style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+            className="w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4"
+            style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', color: '#64748B' }}
           >
-            <HiSearch size={17} />
+            <HiSearch size={18} />
           </div>
-          <p className="text-gray-300 font-medium text-sm mb-1">No results found</p>
-          <p className="text-gray-700 text-xs mb-5">
-            Try adjusting your search terms or clearing filters.
+          <p className="text-slate-300 font-semibold text-base mb-1.5">No results found</p>
+          <p className="text-slate-600 text-sm mb-6 max-w-xs mx-auto leading-relaxed">
+            Try adjusting your search terms or clearing your active filters.
           </p>
           <Button
             variant="secondary"
@@ -201,10 +226,11 @@ export default function Dashboard() {
             size="sm"
             disabled={page === 1}
             onClick={() => setPage((p) => p - 1)}
+            aria-label="Previous page"
           >
             ← Previous
           </Button>
-          <span className="text-xs text-gray-600 px-2 font-medium tabular-nums">
+          <span className="text-xs text-slate-500 px-2 font-medium tabular-nums">
             {page} / {totalPages}
           </span>
           <Button
@@ -212,6 +238,7 @@ export default function Dashboard() {
             size="sm"
             disabled={page === totalPages}
             onClick={() => setPage((p) => p + 1)}
+            aria-label="Next page"
           >
             Next →
           </Button>
@@ -230,7 +257,7 @@ export default function Dashboard() {
           <div
             className="w-full max-w-md animate-scale-in-spring rounded-2xl p-6"
             style={{
-              background: 'rgba(8,13,26,0.98)',
+              background: 'rgba(15,23,42,0.98)',
               border: '1px solid rgba(255,255,255,0.1)',
               boxShadow: '0 24px 64px rgba(0,0,0,0.7)',
             }}
@@ -238,7 +265,7 @@ export default function Dashboard() {
             <h3 id="rename-modal-title" className="text-white font-semibold text-base mb-1">
               Rename Project
             </h3>
-            <p className="text-xs text-gray-600 mb-5">Enter a new title for this project.</p>
+            <p className="text-xs text-slate-500 mb-5">Enter a new title for this project.</p>
             <input
               autoFocus
               type="text"
@@ -250,6 +277,7 @@ export default function Dashboard() {
               }}
               className="input-base mb-5"
               placeholder="Project title"
+              aria-label="New project title"
             />
             <div className="flex gap-3 justify-end">
               <Button variant="ghost" size="sm" onClick={() => setRenameState(null)}>

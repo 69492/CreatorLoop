@@ -13,19 +13,22 @@ export default function ProtectedRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-navy-900 flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--color-bg)' }}>
         <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 rounded-2xl bg-brand-purple/15 border border-brand-purple/25 flex items-center justify-center animate-pulse-slow">
-            <HiSparkles size={22} className="text-brand-purple-light" />
+          <div
+            className="w-12 h-12 rounded-2xl flex items-center justify-center animate-pulse-slow"
+            style={{ background: 'rgba(255,122,26,0.12)', border: '1px solid rgba(255,122,26,0.2)', color: '#FF9A4D' }}
+          >
+            <HiSparkles size={22} />
           </div>
-          <p className="text-xs text-gray-600 font-medium">Loading…</p>
+          <p className="text-xs text-slate-600 font-medium">Loading…</p>
         </div>
       </div>
     )
   }
 
   if (!isAuthenticated) {
-    return <Navigate to="/auth" state={{ from: location }} replace />
+    return <Navigate to="/auth/signin" state={{ from: location }} replace />
   }
 
   return children

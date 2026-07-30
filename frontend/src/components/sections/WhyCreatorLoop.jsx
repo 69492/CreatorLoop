@@ -1,44 +1,27 @@
 import SectionWrapper from '@/components/common/SectionWrapper'
 import SectionHeader from '@/components/common/SectionHeader'
-import Card from '@/components/ui/Card'
-import { HiClock, HiCheckCircle, HiGlobeAlt } from 'react-icons/hi'
 
-const REASONS = [
+const STATS = [
   {
-    icon: <HiClock size={24} />,
-    title: 'Save Hours, Not Minutes',
-    description:
-      'Eliminate manual reformatting and repetitive rewrites. The AI pipeline handles production so you can stay in your creative zone.',
-    iconColor: 'text-amber-400',
-    iconBg: 'bg-amber-500/10 border border-amber-500/18',
+    emoji: '⚡',
     stat: '10×',
-    statLabel: 'faster production',
-    statColor: 'text-amber-400',
-    accentBg: 'from-amber-500/6',
+    label: 'Faster Production',
+    desc: 'Eliminate manual reformatting and repetitive rewrites across platforms.',
+    color: '#F59E0B',
   },
   {
-    icon: <HiCheckCircle size={24} />,
-    title: 'Consistent Brand Voice',
-    description:
-      'Publish content that always matches your tone, structure, and quality — regardless of how much output you are producing.',
-    iconColor: 'text-emerald-400',
-    iconBg: 'bg-emerald-500/10 border border-emerald-500/18',
+    emoji: '🎯',
     stat: '100%',
-    statLabel: 'brand alignment',
-    statColor: 'text-emerald-400',
-    accentBg: 'from-emerald-500/6',
+    label: 'Brand Alignment',
+    desc: 'Publish content that always matches your tone, structure, and quality.',
+    color: '#2DD4BF',
   },
   {
-    icon: <HiGlobeAlt size={24} />,
-    title: 'One Idea, Every Platform',
-    description:
-      'YouTube scripts, LinkedIn posts, newsletters — all generated from a single concept in one session.',
-    iconColor: 'text-brand-blue-light',
-    iconBg: 'bg-brand-blue/10 border border-brand-blue/18',
+    emoji: '🌐',
     stat: '6+',
-    statLabel: 'platforms supported',
-    statColor: 'text-brand-blue-light',
-    accentBg: 'from-brand-blue/6',
+    label: 'Platforms',
+    desc: 'YouTube, LinkedIn, Instagram, Blog, X, Podcast — all from one session.',
+    color: '#FF7A1A',
   },
 ]
 
@@ -47,35 +30,48 @@ export default function WhyCreatorLoop() {
     <SectionWrapper id="why">
       <SectionHeader
         label="Why CreatorLoop"
-        heading={
-          <>
-            The Smarter Way to{' '}
-            <span className="gradient-text">Build Content</span>
-          </>
-        }
-        subheading="Stop reinventing your workflow for every platform. CreatorLoop gives you a repeatable system that scales with your ambitions."
+        heading="The Smarter Way to Build Content"
+        subheading="Stop reinventing your workflow for every platform. CreatorLoop gives you a repeatable, scalable system."
       />
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        {REASONS.map((reason) => (
-          <div key={reason.title} className="glass-card-hover group relative overflow-hidden p-6 flex flex-col gap-5">
-            {/* Subtle gradient */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${reason.accentBg} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl pointer-events-none`} />
+        {STATS.map((item) => (
+          <div
+            key={item.stat}
+            className="group relative flex flex-col gap-5 p-7 rounded-xl cursor-default transition-all duration-200"
+            style={{
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = `${item.color}30`
+              e.currentTarget.style.transform = 'translateY(-3px)'
+              e.currentTarget.style.boxShadow = `0 12px 32px rgba(0,0,0,0.35), 0 0 0 1px ${item.color}15`
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'var(--color-border)'
+              e.currentTarget.style.transform = ''
+              e.currentTarget.style.boxShadow = 'none'
+            }}
+          >
+            {/* Top accent line */}
+            <div className="absolute top-0 left-0 right-0 h-0.5 rounded-t-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                 style={{ background: `linear-gradient(to right, transparent, ${item.color}, transparent)` }} />
 
-            <div className="relative flex items-start justify-between">
-              <div className={`inline-flex p-3 rounded-2xl ${reason.iconBg} transition-transform duration-300 group-hover:scale-105`}>
-                <span className={reason.iconColor}>{reason.icon}</span>
+            <div className="flex items-start justify-between">
+              <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
+                   style={{ background: `${item.color}10`, border: `1px solid ${item.color}20` }}>
+                {item.emoji}
               </div>
               <div className="text-right">
-                <div className={`text-3xl font-black ${reason.statColor} leading-none`}>{reason.stat}</div>
-                <div className="text-xs text-gray-600 mt-1">{reason.statLabel}</div>
+                <div className="text-4xl font-black leading-none" style={{ fontFamily: "'Sora', sans-serif", color: item.color }}>
+                  {item.stat}
+                </div>
+                <div className="text-xs text-slate-600 mt-1 font-medium">{item.label}</div>
               </div>
             </div>
 
-            <div className="relative">
-              <h3 className="text-white font-semibold text-base mb-2 tracking-tight group-hover:text-brand-purple-light transition-colors duration-300">{reason.title}</h3>
-              <p className="text-gray-500 text-sm leading-relaxed">{reason.description}</p>
-            </div>
+            <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
           </div>
         ))}
       </div>

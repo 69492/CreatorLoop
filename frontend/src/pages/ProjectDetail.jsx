@@ -22,21 +22,25 @@ const fmtDate = (iso) =>
 function Section({ title, emoji, children, defaultOpen = true }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <Card className="mb-4 border-white/15">
+    <Card className="mb-4">
       <button
         type="button"
         aria-expanded={open}
-        className="flex items-center justify-between w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple rounded-lg"
+        className="flex items-center justify-between w-full text-left focus-visible:outline-none rounded-lg"
         onClick={() => setOpen((v) => !v)}
       >
         <span className="text-base font-bold text-white flex items-center gap-2.5">
           <span>{emoji}</span> {title}
         </span>
         <HiChevronDown
-          className={`w-5 h-5 text-gray-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`w-5 h-5 text-slate-400 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
         />
       </button>
-      {open && <div className="mt-4 pt-3 border-t border-white/10 animate-fade-in">{children}</div>}
+      {open && (
+        <div className="mt-4 pt-3 animate-fade-in" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }}>
+          {children}
+        </div>
+      )}
     </Card>
   )
 }
@@ -53,7 +57,10 @@ function CopyBtn({ text }) {
     <button
       type="button"
       onClick={handleCopy}
-      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/15 text-xs font-medium text-gray-400 hover:text-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple"
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium text-slate-400 hover:text-white transition-all focus-visible:outline-none"
+      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.09)' }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
     >
       {copied ? <HiCheckCircle size={13} className="text-emerald-400" /> : <HiClipboardCopy size={13} />}
       {copied ? <span className="text-emerald-400">Copied</span> : 'Copy'}
@@ -63,10 +70,10 @@ function CopyBtn({ text }) {
 
 function TextField({ label, value }) {
   return (
-    <div className="mb-3.5 bg-white/5 p-3.5 rounded-xl border border-white/5">
-      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-1">{label}</p>
+    <div className="mb-3.5 p-3.5 rounded-xl" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-1">{label}</p>
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm text-gray-200 flex-1 leading-relaxed font-medium">{value || '—'}</p>
+        <p className="text-sm text-slate-200 flex-1 leading-relaxed font-medium">{value || '—'}</p>
         {value && <CopyBtn text={value} />}
       </div>
     </div>
@@ -77,7 +84,7 @@ function TagList({ label, items }) {
   if (!items?.length) return null
   return (
     <div className="mb-3.5">
-      <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-2">{label}</p>
+      <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">{label}</p>
       <div className="flex flex-wrap gap-2">
         {items.map((item, i) => (
           <Badge key={i} variant="default">
@@ -207,7 +214,7 @@ export default function ProjectDetail() {
 
   if (error) return (
     <div className="px-4 py-12 max-w-4xl mx-auto text-center">
-      <p className="text-gray-400 mb-4">{error}</p>
+      <p className="text-slate-400 mb-4">{error}</p>
       <Link to="/projects"><Button variant="secondary">← Back to Projects</Button></Link>
     </div>
   )
@@ -220,10 +227,13 @@ export default function ProjectDetail() {
     <div className="px-4 sm:px-6 lg:px-8 py-8 max-w-4xl mx-auto space-y-6 animate-fade-in">
 
       {/* ── Back + actions bar ──────────────────────────────────────────── */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2 border-b border-white/10">
+      <div
+        className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4"
+        style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+      >
         <Link
           to="/projects"
-          className="inline-flex items-center gap-2 text-sm font-medium text-gray-400 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple rounded-lg"
+          className="inline-flex items-center gap-2 text-sm font-medium text-slate-400 hover:text-white transition-colors focus-visible:outline-none rounded-lg"
         >
           <HiArrowLeft size={16} />
           Projects
@@ -232,7 +242,7 @@ export default function ProjectDetail() {
         <div className="flex flex-wrap items-center gap-2">
           {/* Auto-save indicator */}
           {saving && (
-            <span className="text-xs font-semibold text-gray-400 animate-pulse mr-2">Saving…</span>
+            <span className="text-xs font-semibold text-slate-400 animate-pulse mr-2">Saving…</span>
           )}
           {savedIndicator && (
             <span className="text-xs font-semibold text-emerald-400 flex items-center gap-1 mr-2">
@@ -244,14 +254,14 @@ export default function ProjectDetail() {
             <HiClipboardCopy size={15} />
             Copy All
           </Button>
-          
+
           <ExportMenu projectId={id} projectTitle={project.title} />
-          
+
           <Button variant="secondary" size="sm" onClick={handleDuplicate}>
             <HiDuplicate size={15} />
             Duplicate
           </Button>
-          
+
           <Button variant="danger" size="sm" onClick={handleDelete}>
             <HiTrash size={15} />
             Delete
@@ -270,14 +280,17 @@ export default function ProjectDetail() {
               onChange={(e) => setTitleValue(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') handleRenameCommit(); if (e.key === 'Escape') setEditTitle(false) }}
               onBlur={handleRenameCommit}
-              className="text-2xl font-bold bg-transparent border-b-2 border-brand-purple text-white focus:outline-none flex-1 py-1"
+              className="text-2xl font-bold bg-transparent text-white focus:outline-none flex-1 py-1"
+              style={{ borderBottom: '2px solid #FF7A1A' }}
             />
           </div>
         ) : (
           <h1
-            className="text-2xl sm:text-3xl font-extrabold text-white cursor-pointer hover:text-brand-purple-light transition-colors tracking-tight"
+            className="text-2xl sm:text-3xl font-extrabold text-white cursor-pointer transition-colors tracking-tight"
             title="Click to rename"
             onClick={() => setEditTitle(true)}
+            onMouseEnter={(e) => { e.currentTarget.style.color = '#FF9A4D' }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = '' }}
           >
             {project.title}
           </h1>
@@ -286,10 +299,10 @@ export default function ProjectDetail() {
 
       {/* ── Meta badges ─────────────────────────────────────────────────── */}
       <div className="flex flex-wrap gap-2 text-xs">
-        <Badge variant="purple" className="capitalize">
+        <Badge variant="orange" className="capitalize">
           Goal: {project.goal?.replace(/-/g, ' ')}
         </Badge>
-        <Badge variant="blue" className="capitalize">
+        <Badge variant="teal" className="capitalize">
           Platform: {project.platform}
         </Badge>
         <Badge variant="default" className="capitalize">
@@ -298,14 +311,14 @@ export default function ProjectDetail() {
         <Badge variant="default">
           {project.word_count?.toLocaleString()} words
         </Badge>
-        <span className="text-xs text-gray-500 self-center ml-1">
+        <span className="text-xs text-slate-500 self-center ml-1">
           Updated {fmtDate(project.updated_at)}
         </span>
       </div>
 
       {/* ── Original Idea ────────────────────────────────────────────────── */}
       <Section title="Original Creative Idea" emoji="💡" defaultOpen={false}>
-        <p className="text-sm text-gray-200 leading-relaxed font-medium">{project.idea}</p>
+        <p className="text-sm text-slate-200 leading-relaxed font-medium">{project.idea}</p>
       </Section>
 
       {/* ── Analysis ────────────────────────────────────────────────────── */}
@@ -323,12 +336,16 @@ export default function ProjectDetail() {
       {brainstorm?.length > 0 && (
         <Section title="Brainstorm Concepts" emoji="🧠" defaultOpen={false}>
           {brainstorm.map((c, i) => (
-            <div key={i} className="mb-4 pb-4 border-b border-white/5 last:border-0 last:mb-0 last:pb-0 space-y-1">
+            <div
+              key={i}
+              className="mb-4 pb-4 last:border-0 last:mb-0 last:pb-0 space-y-1"
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+            >
               <p className="text-sm font-bold text-white">{i + 1}. {c.title}</p>
-              <p className="text-xs text-gray-400">
-                <span className="font-semibold text-gray-300">Hook:</span> "{c.hook}"
+              <p className="text-xs text-slate-400">
+                <span className="font-semibold text-slate-300">Hook:</span> "{c.hook}"
               </p>
-              <p className="text-xs text-gray-300 leading-relaxed">{c.description}</p>
+              <p className="text-xs text-slate-300 leading-relaxed">{c.description}</p>
             </div>
           ))}
         </Section>
@@ -338,7 +355,7 @@ export default function ProjectDetail() {
       {recommended_direction && (
         <Section title="Recommended Direction" emoji="🎯" defaultOpen={false}>
           <p className="text-sm font-bold text-white mb-2">{recommended_direction.title}</p>
-          <p className="text-sm text-gray-300 leading-relaxed">{recommended_direction.reason}</p>
+          <p className="text-sm text-slate-300 leading-relaxed">{recommended_direction.reason}</p>
         </Section>
       )}
 
@@ -346,23 +363,26 @@ export default function ProjectDetail() {
       {content && (
         <Section title="Content Draft Editor" emoji="✍️" defaultOpen={true}>
           <div className="mb-4">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Title</p>
+            <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Title</p>
             <p className="text-base font-bold text-white">{content.title}</p>
           </div>
           {content.outline?.length > 0 && (
             <div className="mb-4">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Outline & Structure</p>
-              <ol className="list-decimal list-inside space-y-1 bg-white/5 p-3 rounded-xl border border-white/5">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Outline & Structure</p>
+              <ol
+                className="list-decimal list-inside space-y-1 p-3 rounded-xl"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
                 {content.outline.map((line, i) => (
-                  <li key={i} className="text-xs text-gray-300 font-medium">{typeof line === 'string' ? line : line.section}</li>
+                  <li key={i} className="text-xs text-slate-300 font-medium">{typeof line === 'string' ? line : line.section}</li>
                 ))}
               </ol>
             </div>
           )}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Full Content Draft (Auto-Saves)</p>
-              {saving && <span className="text-xs text-gray-400 animate-pulse font-semibold">Saving…</span>}
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Full Content Draft (Auto-Saves)</p>
+              {saving && <span className="text-xs text-slate-400 animate-pulse font-semibold">Saving…</span>}
               {savedIndicator && <span className="text-xs text-emerald-400 font-semibold">✓ Saved</span>}
             </div>
             <RichTextEditor
@@ -378,12 +398,19 @@ export default function ProjectDetail() {
       {adaptations && Object.keys(adaptations).length > 0 && (
         <Section title="Platform Adaptations" emoji="🔄" defaultOpen={false}>
           {Object.entries(adaptations).map(([plat, text]) => (
-            <div key={plat} className="mb-4 pb-4 border-b border-white/5 last:border-0 last:mb-0 last:pb-0">
+            <div
+              key={plat}
+              className="mb-4 pb-4 last:border-0 last:mb-0 last:pb-0"
+              style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}
+            >
               <div className="flex items-center justify-between mb-2">
                 <p className="text-xs font-bold text-white uppercase tracking-wider">{plat}</p>
                 <CopyBtn text={typeof text === 'string' ? text : JSON.stringify(text)} />
               </div>
-              <p className="text-xs text-gray-300 whitespace-pre-wrap leading-relaxed bg-white/5 p-3 rounded-xl border border-white/5">
+              <p
+                className="text-xs text-slate-300 whitespace-pre-wrap leading-relaxed p-3 rounded-xl"
+                style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}
+              >
                 {typeof text === 'string' ? text : JSON.stringify(text, null, 2)}
               </p>
             </div>

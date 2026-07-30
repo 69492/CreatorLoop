@@ -23,7 +23,7 @@ function getTitleForPath(pathname) {
 export default function TopNav() {
   const { pathname } = useLocation()
   const { label, breadcrumb } = getTitleForPath(pathname)
-  const { user, logout, isAuthenticated } = useAuth()
+  const { user, logout } = useAuth()
   const { toast } = useToast()
   const navigate = useNavigate()
   const [dropdownOpen, setDropdownOpen] = useState(false)
@@ -42,13 +42,12 @@ export default function TopNav() {
     <header
       className="h-14 flex items-center justify-between px-4 sm:px-6 shrink-0 sticky top-0 z-40"
       style={{
-        background: 'rgba(8,13,26,0.7)',
+        background: 'rgba(5,8,22,0.8)',
         backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(255,255,255,0.07)',
-        boxShadow: '0 1px 0 rgba(0,0,0,0.2)',
+        borderBottom: '1px solid var(--color-border)',
       }}
     >
-      {/* Left — logo on mobile / breadcrumb on desktop */}
+      {/* Left — breadcrumb */}
       <div className="flex items-center gap-3">
         <div className="md:hidden">
           <Link to="/workspace" aria-label="CreatorLoop — workspace home">
@@ -56,11 +55,11 @@ export default function TopNav() {
           </Link>
         </div>
         <div className="hidden md:flex items-center gap-2 text-sm">
-          <span className="text-gray-600 font-medium">{breadcrumb}</span>
-          <svg className="w-3 h-3 text-gray-700" fill="none" viewBox="0 0 6 10">
+          <span className="text-slate-600 font-medium">{breadcrumb}</span>
+          <svg className="w-3 h-3 text-slate-700" fill="none" viewBox="0 0 6 10">
             <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M1 1l4 4-4 4" />
           </svg>
-          <span className="text-gray-300 font-semibold">{label}</span>
+          <span className="text-slate-300 font-semibold" style={{ fontFamily: "'Sora', sans-serif" }}>{label}</span>
         </div>
       </div>
 
@@ -69,35 +68,35 @@ export default function TopNav() {
         <button
           type="button"
           onClick={() => setDropdownOpen((v) => !v)}
-          className="flex items-center gap-2 px-2 py-1.5 rounded-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple"
-          style={dropdownOpen ? { background: 'rgba(255,255,255,0.08)' } : {}}
-          onMouseEnter={(e) => { if (!dropdownOpen) e.currentTarget.style.background = 'rgba(255,255,255,0.06)' }}
+          className="flex items-center gap-2 px-2 py-1.5 rounded-lg transition-all duration-150 focus-visible:outline-none"
+          style={dropdownOpen ? { background: 'var(--color-hover)' } : {}}
+          onMouseEnter={(e) => { if (!dropdownOpen) e.currentTarget.style.background = 'rgba(255,255,255,0.05)' }}
           onMouseLeave={(e) => { if (!dropdownOpen) e.currentTarget.style.background = '' }}
           aria-label="Account menu"
           aria-expanded={dropdownOpen}
           aria-haspopup="menu"
         >
-          {/* Avatar */}
           {user?.avatar_url ? (
             <img
               src={user.avatar_url}
               alt={displayName}
-              className="w-7 h-7 rounded-full object-cover ring-1 ring-white/10"
+              className="w-7 h-7 rounded-full object-cover"
+              style={{ border: '1px solid rgba(255,255,255,0.12)' }}
             />
           ) : (
             <div
-              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[11px] font-bold ring-1 ring-white/10"
-              style={{ background: 'linear-gradient(135deg, #7c3aed, #3b82f6)' }}
+              className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold"
+              style={{ background: 'linear-gradient(135deg, #FF7A1A, #2DD4BF)' }}
             >
               {initials}
             </div>
           )}
-          <span className="text-xs font-medium text-gray-400 hidden sm:block max-w-[120px] truncate">
+          <span className="text-xs font-medium text-slate-400 hidden sm:block max-w-[120px] truncate">
             {displayName}
           </span>
           <HiChevronDown
             size={12}
-            className={`text-gray-600 transition-transform duration-150 hidden sm:block ${dropdownOpen ? 'rotate-180' : ''}`}
+            className={`text-slate-600 transition-transform duration-150 hidden sm:block ${dropdownOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
@@ -110,53 +109,34 @@ export default function TopNav() {
               aria-hidden="true"
             />
             <div
-              className="absolute right-0 top-11 z-20 w-56 rounded-2xl p-1.5 animate-scale-in-spring"
+              className="absolute right-0 top-11 z-20 w-56 rounded-xl p-1.5 animate-enter-from-top"
               style={{
-                background: 'rgba(6,11,22,0.97)',
-                border: '1px solid rgba(255,255,255,0.1)',
-                boxShadow: '0 20px 60px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05)',
-                backdropFilter: 'blur(20px)',
+                background: 'var(--color-elevated)',
+                border: '1px solid var(--color-border)',
+                boxShadow: '0 20px 60px rgba(0,0,0,0.6)',
               }}
               role="menu"
               aria-label="Account options"
             >
               {/* User info */}
-              <div
-                className="px-3 py-3 mb-1"
-                style={{ borderBottom: '1px solid rgba(255,255,255,0.07)' }}
-              >
-                <p className="text-xs font-semibold text-white truncate">
+              <div className="px-3 py-3 mb-1" style={{ borderBottom: '1px solid var(--color-border)' }}>
+                <p className="text-xs font-semibold text-white truncate" style={{ fontFamily: "'Sora', sans-serif" }}>
                   {user?.full_name || displayName}
                 </p>
-                <p className="text-xs text-gray-600 truncate mt-0.5">{user?.email}</p>
+                <p className="text-xs text-slate-600 truncate mt-0.5">{user?.email}</p>
               </div>
 
-              <MenuLink
-                to="/workspace"
-                onClick={() => setDropdownOpen(false)}
-                icon={<HiViewGrid size={13} />}
-                label="Dashboard"
-              />
-              <MenuLink
-                to="/profile"
-                onClick={() => setDropdownOpen(false)}
-                icon={<HiUser size={13} />}
-                label="Profile"
-              />
-              <MenuLink
-                to="/settings"
-                onClick={() => setDropdownOpen(false)}
-                icon={<HiCog size={13} />}
-                label="Settings"
-              />
+              <MenuLink to="/workspace" onClick={() => setDropdownOpen(false)} icon={<HiViewGrid size={13} />} label="Dashboard" />
+              <MenuLink to="/profile"   onClick={() => setDropdownOpen(false)} icon={<HiUser size={13} />}     label="Profile" />
+              <MenuLink to="/settings"  onClick={() => setDropdownOpen(false)} icon={<HiCog size={13} />}      label="Settings" />
 
-              <div className="h-px my-1.5" style={{ background: 'rgba(255,255,255,0.07)' }} />
+              <div className="h-px my-1.5" style={{ background: 'var(--color-border)' }} />
 
               <button
                 type="button"
                 onClick={handleLogout}
-                className="flex items-center gap-2.5 w-full px-3 py-2 rounded-xl text-sm font-medium text-red-400 transition-all duration-150"
-                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.08)'}
+                className="flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-sm font-medium text-red-400 transition-all duration-150"
+                onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(239,68,68,0.07)'}
                 onMouseLeave={(e) => e.currentTarget.style.background = ''}
                 role="menuitem"
               >
@@ -176,8 +156,8 @@ function MenuLink({ to, icon, label, onClick }) {
     <Link
       to={to}
       onClick={onClick}
-      className="flex items-center gap-2.5 px-3 py-2 rounded-xl text-sm font-medium text-gray-400 transition-all duration-150"
-      onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(255,255,255,0.05)'; e.currentTarget.style.color = '#fff' }}
+      className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-slate-400 transition-all duration-150"
+      onMouseEnter={(e) => { e.currentTarget.style.background = 'var(--color-hover)'; e.currentTarget.style.color = '#fff' }}
       onMouseLeave={(e) => { e.currentTarget.style.background = ''; e.currentTarget.style.color = '' }}
       role="menuitem"
     >

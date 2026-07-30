@@ -1,18 +1,32 @@
 import { createContext, useContext, useState, useCallback, useRef } from 'react'
-import { HiCheckCircle, HiXCircle, HiInformationCircle, HiX } from 'react-icons/hi'
 
 /**
- * Lightweight toast notification system.
- *
- * Usage:
- *   const { toast } = useToast()
- *   toast.success('Saved!')
- *   toast.error('Failed')
- *   toast.info('Processing…')
+ * Lightweight toast notification system — Midnight Studio design.
  */
 const ToastContext = createContext(null)
 
 let _nextId = 0
+
+const TYPE_CONFIG = {
+  success: {
+    icon: '✓',
+    accentColor: '#22C55E',
+    borderColor: 'rgba(34,197,94,0.2)',
+    iconColor: '#22C55E',
+  },
+  error: {
+    icon: '✕',
+    accentColor: '#EF4444',
+    borderColor: 'rgba(239,68,68,0.2)',
+    iconColor: '#EF4444',
+  },
+  info: {
+    icon: 'i',
+    accentColor: '#FF7A1A',
+    borderColor: 'rgba(255,122,26,0.2)',
+    iconColor: '#FF7A1A',
+  },
+}
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([])
@@ -56,29 +70,6 @@ export function useToast() {
   return ctx
 }
 
-// ── Visual component ──────────────────────────────────────────────────────────
-
-const TYPE_CONFIG = {
-  success: {
-    icon: <HiCheckCircle size={16} />,
-    cls: 'border-emerald-500/30 text-emerald-300',
-    iconCls: 'text-emerald-400',
-    bg: 'rgba(8,17,26,0.92)',
-  },
-  error: {
-    icon: <HiXCircle size={16} />,
-    cls: 'border-red-500/30 text-red-300',
-    iconCls: 'text-red-400',
-    bg: 'rgba(8,17,26,0.92)',
-  },
-  info: {
-    icon: <HiInformationCircle size={16} />,
-    cls: 'border-white/12 text-gray-300',
-    iconCls: 'text-brand-purple-light',
-    bg: 'rgba(8,17,26,0.92)',
-  },
-}
-
 function ToastContainer({ toasts, dismiss }) {
   if (!toasts.length) return null
   return (
@@ -88,30 +79,35 @@ function ToastContainer({ toasts, dismiss }) {
       aria-label="Notifications"
     >
       {toasts.map((t) => {
-        const config = TYPE_CONFIG[t.type] ?? TYPE_CONFIG.info
+        const cfg = TYPE_CONFIG[t.type] ?? TYPE_CONFIG.info
         return (
           <div
             key={t.id}
-            className={`
-              pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-2xl
-              border backdrop-blur-md
-              max-w-[340px] w-full animate-slide-up text-sm font-medium
-              ${config.cls}
-            `}
-            style={{ background: config.bg, boxShadow: '0 4px 24px rgba(0,0,0,0.4)' }}
+            className="pointer-events-auto flex items-start gap-3 px-4 py-3 rounded-xl max-w-[320px] w-full animate-slide-up text-sm font-medium border"
+            style={{
+              background: 'var(--color-elevated)',
+              borderColor: cfg.borderColor,
+              boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+              backdropFilter: 'blur(12px)',
+            }}
             role="alert"
           >
-            <span className={`shrink-0 mt-0.5 ${config.iconCls}`} aria-hidden="true">
-              {config.icon}
+            {/* Icon */}
+            <span
+              className="shrink-0 mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
+              style={{ background: `${cfg.accentColor}15`, border: `1px solid ${cfg.accentColor}30`, color: cfg.iconColor }}
+              aria-hidden="true"
+            >
+              {cfg.icon}
             </span>
-            <span className="flex-1 leading-snug">{t.message}</span>
+            <span className="flex-1 leading-snug text-slate-200">{t.message}</span>
             <button
               type="button"
               onClick={() => dismiss(t.id)}
-              className="shrink-0 opacity-40 hover:opacity-80 transition-opacity ml-1"
+              className="shrink-0 opacity-40 hover:opacity-80 transition-opacity ml-1 text-slate-400"
               aria-label="Dismiss notification"
             >
-              <HiX size={14} />
+              ×
             </button>
           </div>
         )

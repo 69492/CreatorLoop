@@ -144,29 +144,31 @@ def needs_rehash(hashed: str) -> bool:
 
 # ── JWT ────────────────────────────────────────────────────────────────────────
 
-_ALGORITHM = "HS256"
-
-
 def create_access_token(
     user_id: str,
     expires_delta: Optional[timedelta] = None,
 ) -> str:
     """
     Encode a signed JWT containing the user's UUID as the ``sub`` claim.
-    Default expiry is driven by ``settings.JWT_ACCESS_TOKEN_EXPIRE_DAYS``.
+    Default expiry is driven by ``settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES``.
     """
     now = datetime.now(timezone.utc)
     expire = now + (
         expires_delta
         if expires_delta is not None
-        else timedelta(days=settings.JWT_ACCESS_TOKEN_EXPIRE_DAYS)
+        else timedelta(minutes=settings.JWT_ACCESS_TOKEN_EXPIRE_MINUTES)
     )
     payload: dict = {
         "sub": user_id,
         "iat": now,
         "exp": expire,
+        "type": "access",
     }
-    return jwt.encode(payload, settings.JWT_SECRET_KEY, algorithm=_ALGORITHM)
+    return jwt.encode(
+        payload,
+        settings.JWT_SECRET_KEY,
+        algorithm=settings.JWT_ALGORITHM,
+    )
 
 
 def decode_token(token: str) -> Optional[str]:
@@ -178,7 +180,7 @@ def decode_token(token: str) -> Optional[str]:
         payload = jwt.decode(
             token,
             settings.JWT_SECRET_KEY,
-            algorithms=[_ALGORITHM],
+            algorithms=[settings.JWT_ALGORITHM],
         )
         sub: Optional[str] = payload.get("sub")
         return sub

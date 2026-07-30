@@ -1,6 +1,6 @@
 /**
- * Reusable button component with premium variants, sizes, and loading state.
- * variant: 'primary' | 'secondary' | 'ghost' | 'danger'
+ * Button — Midnight Studio button component
+ * variant: 'primary' | 'secondary' | 'teal' | 'ghost' | 'danger'
  * size: 'sm' | 'md' | 'lg'
  */
 import { forwardRef } from 'react'
@@ -19,16 +19,17 @@ const Button = forwardRef(function Button(
   ref
 ) {
   const variants = {
-    primary: 'btn-primary',
+    primary:   'btn-primary',
     secondary: 'btn-secondary',
-    ghost: 'btn-ghost',
-    danger: 'btn-danger',
+    teal:      'btn-teal',
+    ghost:     'btn-ghost',
+    danger:    'btn-danger',
   }
 
   const sizes = {
-    sm: 'px-3 py-1.5 text-xs rounded-lg',
-    md: 'px-5 py-2.5 text-sm rounded-xl',
-    lg: 'px-7 py-3.5 text-base rounded-2xl',
+    sm: 'px-3 py-1.5 text-xs',
+    md: 'px-5 py-2.5 text-sm',
+    lg: 'px-7 py-3 text-base',
   }
 
   const isBtnDisabled = disabled || loading
@@ -45,27 +46,16 @@ const Button = forwardRef(function Button(
       {loading ? (
         <>
           <svg
-            className="animate-spin -ml-1 mr-2 h-4 w-4 text-current"
+            className="animate-spin -ml-0.5 mr-1 h-3.5 w-3.5 text-current"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             aria-hidden="true"
           >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-            ></path>
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          <span>Loading...</span>
+          <span>Loading…</span>
         </>
       ) : (
         children

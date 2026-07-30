@@ -1,6 +1,5 @@
 /**
- * Selectable option card used in the Create page.
- * selected: bool, onClick: fn, icon, label, description
+ * SelectCard — Midnight Studio selectable option card
  */
 export default function SelectCard({
   icon,
@@ -15,31 +14,31 @@ export default function SelectCard({
       type="button"
       disabled={disabled}
       onClick={onClick}
-      className={`w-full text-left p-4 rounded-2xl transition-all duration-200
-        focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple focus-visible:ring-offset-2 focus-visible:ring-offset-navy-900
+      className={`w-full text-left p-4 rounded-xl transition-all duration-200
+        focus-visible:outline-none
         ${disabled ? 'opacity-35 cursor-not-allowed' : 'active:scale-[0.99]'}
       `}
       style={
         selected
           ? {
-              background: 'rgba(124,58,237,0.12)',
-              border: '1px solid rgba(124,58,237,0.45)',
-              boxShadow: '0 0 0 1px rgba(124,58,237,0.2), 0 2px 8px rgba(124,58,237,0.15)',
+              background: 'rgba(255,122,26,0.08)',
+              border: '1px solid rgba(255,122,26,0.35)',
+              boxShadow: '0 0 0 1px rgba(255,122,26,0.15)',
             }
           : disabled
-            ? { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }
-            : { background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }
+            ? { background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)' }
+            : { background: 'var(--color-surface)', border: '1px solid var(--color-border)' }
       }
       onMouseEnter={(e) => {
         if (!selected && !disabled) {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.07)'
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.18)'
+          e.currentTarget.style.background = 'var(--color-elevated)'
+          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.14)'
         }
       }}
       onMouseLeave={(e) => {
         if (!selected && !disabled) {
-          e.currentTarget.style.background = 'rgba(255,255,255,0.04)'
-          e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'
+          e.currentTarget.style.background = 'var(--color-surface)'
+          e.currentTarget.style.borderColor = 'var(--color-border)'
         }
       }}
     >
@@ -51,31 +50,28 @@ export default function SelectCard({
           }`}
           style={
             selected
-              ? { borderColor: 'rgba(167,139,250,1)', background: 'rgba(124,58,237,0.15)' }
+              ? { borderColor: '#FF7A1A', background: 'rgba(255,122,26,0.1)' }
               : { borderColor: 'rgba(255,255,255,0.2)' }
           }
         >
           {selected && (
-            <div
-              className="w-2 h-2 rounded-full"
-              style={{ background: 'linear-gradient(135deg, #c084fc, #a78bfa)' }}
-            />
+            <div className="w-2 h-2 rounded-full" style={{ background: '#FF7A1A' }} />
           )}
         </div>
 
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-0.5">
             {icon && (
-              <span className={`text-base leading-none ${selected ? 'text-brand-purple-light' : 'text-gray-500'}`}>
+              <span className="text-base leading-none" style={{ color: selected ? '#FF7A1A' : '#64748B' }}>
                 {icon}
               </span>
             )}
-            <span className={`text-sm font-semibold tracking-tight ${selected ? 'text-white' : 'text-gray-300'}`}>
+            <span className="text-sm font-semibold tracking-tight" style={{ color: selected ? '#F8FAFC' : '#CBD5E1' }}>
               {label}
             </span>
           </div>
           {description && (
-            <p className={`text-xs leading-relaxed ${selected ? 'text-gray-400' : 'text-gray-600'}`}>
+            <p className="text-xs leading-relaxed" style={{ color: selected ? '#94A3B8' : '#475569' }}>
               {description}
             </p>
           )}

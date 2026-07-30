@@ -159,7 +159,7 @@ export default function Create() {
       <button
         type="button"
         onClick={() => navigate('/workspace')}
-        className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-purple rounded-lg"
+        className="inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-white transition-colors focus-visible:outline-none rounded-lg"
       >
         <HiArrowLeft size={14} />
         Back to Workspace
@@ -172,7 +172,7 @@ export default function Create() {
       <div
         className="rounded-2xl overflow-hidden"
         style={{
-          background: 'rgba(12,17,32,0.8)',
+          background: 'rgba(15,23,42,0.9)',
           border: '1px solid rgba(255,255,255,0.09)',
           boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
         }}
@@ -186,7 +186,7 @@ export default function Create() {
                 <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">
                   Describe your creative concept
                 </h2>
-                <p className="text-sm text-gray-500 leading-relaxed">
+                <p className="text-sm text-slate-500 leading-relaxed">
                   Share the core idea, message, or subject matter. The more detail you provide, the richer the output.
                 </p>
               </div>
@@ -197,15 +197,15 @@ export default function Create() {
                   onChange={(e) => setIdea(e.target.value)}
                   placeholder="e.g. How remote teams can use async communication to double deep work time and reduce meeting fatigue…"
                   rows={7}
-                  className="w-full px-4 py-3.5 rounded-xl resize-none text-sm leading-relaxed text-gray-100 placeholder-gray-700
+                  className="w-full px-4 py-3.5 rounded-xl resize-none text-sm leading-relaxed text-slate-100 placeholder-slate-600
                              focus:outline-none transition-all duration-200"
                   style={{
-                    background: 'rgba(255,255,255,0.05)',
+                    background: 'rgba(255,255,255,0.04)',
                     border: '1px solid rgba(255,255,255,0.09)',
                   }}
                   onFocus={(e) => {
-                    e.target.style.borderColor = 'rgba(124,58,237,0.6)'
-                    e.target.style.boxShadow = '0 0 0 3px rgba(124,58,237,0.12)'
+                    e.target.style.borderColor = 'rgba(255,122,26,0.5)'
+                    e.target.style.boxShadow = '0 0 0 3px rgba(255,122,26,0.1)'
                   }}
                   onBlur={(e) => {
                     e.target.style.borderColor = 'rgba(255,255,255,0.09)'
@@ -214,7 +214,7 @@ export default function Create() {
                   aria-label="Creative concept description"
                 />
                 <div className="flex items-center justify-between mt-2 px-1">
-                  <span className="text-xs text-gray-600">
+                  <span className="text-xs text-slate-500">
                     {!isReady ? `${MIN_CHARS - charCount} more characters needed` : (
                       <span className="flex items-center gap-1 text-emerald-400">
                         <HiCheckCircle size={12} />
@@ -222,7 +222,7 @@ export default function Create() {
                       </span>
                     )}
                   </span>
-                  <span className={`text-xs font-semibold tabular-nums ${isReady ? 'text-emerald-400' : 'text-gray-600'}`}>
+                  <span className={`text-xs font-semibold tabular-nums ${isReady ? 'text-emerald-400' : 'text-slate-500'}`}>
                     {charCount}
                   </span>
                 </div>
@@ -234,7 +234,7 @@ export default function Create() {
                       width: `${charProgress}%`,
                       background: isReady
                         ? 'linear-gradient(to right, #34d399, #10b981)'
-                        : 'linear-gradient(to right, #7c3aed, #a78bfa)',
+                        : 'linear-gradient(to right, #FF7A1A, #FF9A4D)',
                     }}
                   />
                 </div>
@@ -247,7 +247,7 @@ export default function Create() {
             <div className="space-y-5 animate-fade-in">
               <div>
                 <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Choose your primary goal</h2>
-                <p className="text-sm text-gray-500">Select the format or objective that best fits this content.</p>
+                <p className="text-sm text-slate-500">Select the format or objective that best fits this content.</p>
               </div>
               <div className="grid gap-2.5">
                 {CREATIVE_GOALS.map((g) => (
@@ -269,7 +269,7 @@ export default function Create() {
             <div className="space-y-5 animate-fade-in">
               <div>
                 <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Select target platform</h2>
-                <p className="text-sm text-gray-500">Where will this content primarily be published?</p>
+                <p className="text-sm text-slate-500">Where will this content primarily be published?</p>
               </div>
               <div className="grid sm:grid-cols-2 gap-2.5">
                 {PLATFORMS.map((p) => (
@@ -291,7 +291,7 @@ export default function Create() {
             <div className="space-y-5 animate-fade-in">
               <div>
                 <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Choose content depth</h2>
-                <p className="text-sm text-gray-500">Determine the target length for your generated draft.</p>
+                <p className="text-sm text-slate-500">Determine the target length for your generated draft.</p>
               </div>
               <div className="grid gap-2.5">
                 {LENGTHS.map((l) => (
@@ -312,7 +312,7 @@ export default function Create() {
             <div className="space-y-6 animate-fade-in">
               <div>
                 <h2 className="text-lg font-semibold text-white mb-1.5 tracking-tight">Review your session</h2>
-                <p className="text-sm text-gray-500">Confirm your configuration before launching the AI pipeline.</p>
+                <p className="text-sm text-slate-500">Confirm your configuration before launching the AI pipeline.</p>
               </div>
 
               <div
@@ -320,8 +320,8 @@ export default function Create() {
                 style={{ border: '1px solid rgba(255,255,255,0.08)' }}
               >
                 <div className="p-5" style={{ background: 'rgba(255,255,255,0.03)' }}>
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-2">Concept</p>
-                  <p className="text-sm text-gray-200 leading-relaxed">{idea}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-2">Concept</p>
+                  <p className="text-sm text-slate-200 leading-relaxed">{idea}</p>
                 </div>
                 <div className="grid grid-cols-3 divide-x" style={{ borderTop: '1px solid rgba(255,255,255,0.08)', borderLeftColor: 'transparent' }}>
                   {[
@@ -331,7 +331,7 @@ export default function Create() {
                   ].map((item, idx) => (
                     <div key={item.label} className="p-4"
                          style={{ borderLeft: idx > 0 ? '1px solid rgba(255,255,255,0.07)' : 'none' }}>
-                      <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 mb-1">{item.label}</p>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{item.label}</p>
                       <p className="text-sm font-semibold text-white">{item.value ?? '—'}</p>
                     </div>
                   ))}
@@ -340,10 +340,10 @@ export default function Create() {
 
               <div
                 className="flex items-center gap-2.5 p-3.5 rounded-xl"
-                style={{ background: 'rgba(124,58,237,0.07)', border: '1px solid rgba(124,58,237,0.18)' }}
+                style={{ background: 'rgba(255,122,26,0.06)', border: '1px solid rgba(255,122,26,0.15)' }}
               >
-                <HiSparkles size={14} className="text-brand-purple-light shrink-0" />
-                <p className="text-xs text-gray-400 leading-relaxed">
+                <HiSparkles size={14} style={{ color: '#FF9A4D', flexShrink: 0 }} />
+                <p className="text-xs text-slate-400 leading-relaxed">
                   The AI pipeline will generate a complete draft including brainstorming, creative direction, full content, and platform adaptations.
                 </p>
               </div>

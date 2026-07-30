@@ -1,0 +1,67 @@
+services:
+  # ── PostgreSQL (for local production-like testing) ────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: creatorloop-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=creatorloop
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-devpassword}
+      - POSTGRES_DB=creatorloop
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U creatorloop -d creatorloop"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - creatorloop
+
+  # ── Backend ───────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: creatorloop-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - DATABASE_URL=postgresql+asyncpg://creatorloop:${DB_PASSWORD:-devpassword}@db:5432/creatorloop
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - APP_ENV=staging
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:3000}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - creatorloop
+
+  # ── Frontend ──────────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:8000
+    container_name: creatorloop-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - creatorloop
+
+volumes:
+  postgres-data:
+
+networks:
+  creatorloop:
+    driver: bridge

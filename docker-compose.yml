@@ -1,0 +1,57 @@
+services:
+  # ── Backend (FastAPI) ─────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: creatorloop-api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      # Required secrets — copy from backend/.env
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      # Database — uses SQLite by default; change to PostgreSQL URL for production
+      - DATABASE_URL=${DATABASE_URL:-sqlite+aiosqlite:///./creatorloop.db}
+      # Optional
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+      - APP_ENV=${APP_ENV:-development}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-http://localhost:5173,http://localhost:3000}
+      - CL_DEBUG=${CL_DEBUG:-false}
+    volumes:
+      # Persist SQLite database between restarts (development only)
+      - sqlite-data:/app
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - creatorloop
+
+  # ── Frontend (Vite dev server) ────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=${VITE_API_URL:-http://localhost:8000}
+    container_name: creatorloop-web
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - creatorloop
+
+volumes:
+  sqlite-data:
+
+networks:
+  creatorloop:
+    driver: bridge
